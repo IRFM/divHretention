@@ -20,7 +20,7 @@ data = []
 
 # extract high temp data
 strings = []
-folder = "monoblock_data/Solution_instantaneous_recomb_rand"
+folder = "data/monoblock_data/Solution_instantaneous_recomb_rand"
 for f in os.listdir(folder):
     strings.append(os.path.join("/" + folder, f))
 
@@ -53,7 +53,7 @@ for s in strings:
 # extract low temp data
 L = 30e-3
 strings = []
-folder = "monoblock_data/Solution_instantaneous_recomb_low_temp"
+folder = "data/monoblock_data/Solution_instantaneous_recomb_low_temp"
 for f in os.listdir(folder):
     strings.append(os.path.join("/" + folder, f))
 
