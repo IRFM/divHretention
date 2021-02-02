@@ -34,46 +34,50 @@ def inv(points, time=1e7):
     return np.asarray(values)
 
 
-# with inference-tools
-e = 12e-3  # monoblock thickness (m)
-points2 = []
-z = []
-for p in points:
-    if 320 <= p[0] <= 1100 and 1e20 <= p[1] <= 1e23:
-        points2.append([p[0], np.log10(p[1])])
-        z.append(np.log10(e*inv([p], time=1e7)))
-points2 = np.array(points2)
+def estimate_inventory_with_gp_regression(time=1e7):
+    # with inference-tools
+    e = 12e-3  # monoblock thickness (m)
+    sim_points = []
+    z = []
+    for p in points:
+        if 320 <= p[0] <= 1100 and 1e20 <= p[1] <= 1e23:
+            sim_points.append([p[0], np.log10(p[1])])
+            z.append(np.log10(e*inv([p], time=time)))
+    sim_points = np.array(sim_points)
 
-# Train the GP on the data
-step = 3
-GP = GpRegressor(points2[:: step], z[:: step], kernel=RationalQuadratic)
+    # Train the GP on the data
+    step = 3
+    GP = GpRegressor(sim_points[:: step], z[:: step], kernel=RationalQuadratic)
 
+    # evaluate the estimate
+    Nx, Ny = 50, 10
+    gp_x = np.linspace(320, 1100, Nx)
+    gp_y = np.log10(np.logspace(20, 23, Ny))
+    gp_coords = [(i, j) for i in gp_x for j in gp_y]
+    mu, sig = GP(gp_coords)
+    return 10**mu, sig, gp_x, 10**gp_y, sim_points
 
-# evaluate the estimate
-Nx, Ny = 50, 10
-gp_x = np.linspace(320, 1100, Nx)
-gp_y = np.log10(np.logspace(20, 23, Ny))
-gp_coords = [(i, j) for i in gp_x for j in gp_y]
-mu, sig = GP(gp_coords)
 
 if __name__ == "__main__":
-
+    inv, sig, points_x, points_y, sim_points = \
+        estimate_inventory_with_gp_regression()
     # plot mu
     fig = plt.figure()
     locator = ticker.LogLocator(base=10)
     levels = np.logspace(
-        min(mu),
-        max(mu),
+        min(np.log10(inv)),
+        max(np.log10(inv)),
         1000)
     levels2 = np.logspace(
-        min(mu),
-        max(mu),
+        min(np.log10(inv)),
+        max(np.log10(inv)),
         10)
-    # levels2 = np.delete(levels2, 4)
-    CS = plt.contourf(*np.meshgrid(gp_x, 10**gp_y), 10**mu.reshape([Nx, Ny]).T, locator=locator, levels=levels)
+    XX, YY = np.meshgrid(points_x, points_y)
+    inv_inv = inv.reshape([len(points_x), len(points_y)]).T
+    CS = plt.contourf(XX, YY, inv_inv, locator=locator, levels=levels)
     plt.colorbar(CS, label=r"Inventory per monoblock (H)", ticks=locator)
     CS2 = plt.contour(
-        *np.meshgrid(gp_x, 10**gp_y), 10**mu.reshape([Nx, Ny]).T, levels=levels2,
+        XX, YY, inv_inv, levels=levels2,
         locator=locator, colors="white")
     manual_locations = [
         (861, 2e+20),
@@ -86,12 +90,12 @@ if __name__ == "__main__":
         (558, 2e+22)
         ]
     CLS = plt.clabel(CS2, inline=True, fontsize=10, fmt=scientificNotation, manual=manual_locations)
-    plt.scatter(points2[:, 0], 10**np.array(points2[:, 1]), color=(0.5, 0.5, 0.5), alpha=0.3, marker="+")
+    plt.scatter(sim_points[:, 0], 10**np.array(sim_points[:, 1]), color=(0.5, 0.5, 0.5), alpha=0.3, marker="+")
     plt.yscale("log")
     plt.tick_params(axis='both', which='major', labelsize=13)
     plt.xlabel(r"$T_\mathrm{surface}$ (K)", fontsize=12)
     plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)", fontsize=12)
     for c in CS.collections:  # for avoiding white lines in pdf
-            c.set_edgecolor("face")
+        c.set_edgecolor("face")
     plt.savefig("inv_with_points.svg")
     plt.show()
