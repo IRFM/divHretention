@@ -29,6 +29,8 @@ def extract_data(filename):
         ion_flux_div = ion_flux[index_start:index_stop]
         atom_flux_div = atom_flux[index_start:index_stop]
         net_heat_flux_div = net_heat_flux[index_start:index_stop]
+        angles_ions = angles_ions[1:]
+        angles_atoms = angles_atoms[1:]  # TODO: see why len(angles_atoms) != len(arc_length_div)
 
         # arc length for a straight line
         # arc_length_div = ((R_div - R_div[0])**2 + (Z_div - Z_div[0])**2)**0.5
