@@ -99,3 +99,12 @@ if __name__ == "__main__":
         c.set_edgecolor("face")
     plt.savefig("inv_with_points.svg")
     plt.show()
+    sig_sig = sig.reshape([len(points_x), len(points_y)]).T
+    CS = plt.contourf(
+        XX, YY, sig_sig, levels=100)
+    plt.xlabel(r"$T_\mathrm{surface}$ (K)", fontsize=12)
+    plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)", fontsize=12)
+    plt.yscale("log")
+    plt.scatter(sim_points[:, 0], 10**np.array(sim_points[:, 1]), color=(0.5, 0.5, 0.5), alpha=0.3, marker="+")
+    plt.colorbar(CS, label=r"$\sigma$")
+    plt.show()
