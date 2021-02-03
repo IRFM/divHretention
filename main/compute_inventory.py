@@ -6,8 +6,14 @@ from . import implantation_range, reflection_coeff
 from . import extract_data
 from . import estimate_inventory_with_gp_regression
 
+inv, sig, points_x, points_y, sim_points = \
+    estimate_inventory_with_gp_regression()
 
-def run(filename):
+inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
+sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
+
+
+def process_file(filename, inventory=True):
     R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
         atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
         extract_data(filename)
@@ -19,8 +25,9 @@ def run(filename):
     c_max = compute_c_max(T, E_ion_div, E_atom_div, angles_ions,
                           angles_atoms, ion_flux_div, atom_flux_div, filename)
 
-    # compute inventory as a function of temperature and concentration
-    inventories, sigmas, inv_T_c, sig_inv = compute_inventory(T, c_max)
+    if inventory:
+        # compute inventory as a function of temperature and concentration
+        inventories, sigmas, inv_T_c, sig_inv = compute_inventory(T, c_max)
 
     # output dict
     class Output:
@@ -28,23 +35,16 @@ def run(filename):
 
     output = Output()
     output.arc_length = arc_length_div
-    output.inventory = inventories
     output.temperature = T
     output.concentration = c_max
-    output.sigma_inv = sigmas
-    output.interp_inv = inv_T_c
-    output.interp_sig = sig_inv
+    if inventory:
+        output.inventory = inventories
+        output.sigma_inv = sigmas
 
     return output
 
 
 def compute_inventory(T, c_max):
-    inv, sig, points_x, points_y, sim_points = \
-        estimate_inventory_with_gp_regression()
-
-    inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
-    sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
-
     # compute inventory (H/m) along divertor
     e = 12e-3  # monoblock thickness (m)
     inventories = []  # inventory in H/m
