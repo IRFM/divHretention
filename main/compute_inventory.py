@@ -9,33 +9,15 @@ from . import estimate_inventory_with_gp_regression
 
 def compute_inventory(filename):
     R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
-        atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = extract_data(filename)
+        atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
+        extract_data(filename)
     # Surface temperature from Delaporte-Mathurin et al, SREP 2020
     # https://www.nature.com/articles/s41598-020-74844-w
     T = 1.1e-4*net_heat_flux_div + 323
 
     # Compute the surface H concentration
-
-    # Diffusion coefficient Fernandez et al Acta Materialia (2015)
-    # https://doi.org/10.1016/j.actamat.2015.04.052
-    D_0_W = 1.9e-7
-    E_D_W = 0.2
-    k_B = 8.6e-5
-    D = D_0_W*np.exp(-E_D_W/k_B/T)
-
-    implantation_range_ions = [
-        float(implantation_range(energy, angle)) for energy, angle in zip(E_ion_div, angles_ions)]
-    implantation_range_atoms = [
-        float(implantation_range(energy, angle)) for energy, angle in zip(E_atom_div, angles_atoms)]
-
-    reflection_coeff_ions = np.array([float(reflection_coeff(energy, angle)) for energy, angle in zip(E_ion_div, angles_ions)])
-    reflection_coeff_atoms = np.array([float(reflection_coeff(energy, angle)) for energy, angle in zip(E_atom_div, angles_atoms)])
-    if "Julien" in filename:  # TODO remove this
-        reflection_coeff_ions = 0
-        reflection_coeff_atoms = 0
-
-    c_max = (1 - reflection_coeff_ions)*ion_flux_div*implantation_range_ions/D + \
-        (1 - reflection_coeff_atoms)*atom_flux_div*implantation_range_atoms/D
+    c_max = compute_c_max(T, E_ion_div, E_atom_div, angles_ions,
+                          angles_atoms, ion_flux_div, atom_flux_div, filename)
 
     # compute inventory as a function of temperature and concentration
 
@@ -71,6 +53,33 @@ def compute_inventory(filename):
     output.interp_sig = sig_inv
 
     return output
+
+
+def compute_c_max(T, E_ion, E_atom, angles_ion, angles_atom, ion_flux, atom_flux, filename):
+    # Diffusion coefficient Fernandez et al Acta Materialia (2015)
+    # https://doi.org/10.1016/j.actamat.2015.04.052
+    D_0_W = 1.9e-7
+    E_D_W = 0.2
+    k_B = 8.6e-5
+    D = D_0_W*np.exp(-E_D_W/k_B/T)
+
+    # implantation ranges
+    implantation_range_ions = [
+        float(implantation_range(energy, angle)) for energy, angle in zip(E_ion, angles_ion)]
+    implantation_range_atoms = [
+        float(implantation_range(energy, angle)) for energy, angle in zip(E_atom, angles_atom)]
+
+    # reflection coefficients
+    reflection_coeff_ions = np.array([float(reflection_coeff(energy, angle)) for energy, angle in zip(E_ion, angles_ion)])
+    reflection_coeff_atoms = np.array([float(reflection_coeff(energy, angle)) for energy, angle in zip(E_atom, angles_atom)])
+    if "Julien" in filename:  # TODO remove this
+        reflection_coeff_ions = 0
+        reflection_coeff_atoms = 0
+
+    # compute c_max
+    c_max = (1 - reflection_coeff_ions)*ion_flux*implantation_range_ions/D + \
+        (1 - reflection_coeff_atoms)*atom_flux*implantation_range_atoms/D
+    return c_max
 
 
 if __name__ == "__main__":
