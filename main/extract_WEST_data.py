@@ -19,8 +19,8 @@ def extract_data(filename):
         ind_target = np.hstack(data['ind_target'])
         angles_ions = np.hstack(data["target_strike_angle"])
         angles_atoms = np.hstack(data["target_strike_angle"])  # TODO verify
-        index_start = ind_target[0]
-        index_stop = ind_target[-1]
+        index_start = ind_target[0] - 1
+        index_stop = ind_target[-1] - 1
         R_div = R[index_start:index_stop]
         Z_div = Z[index_start:index_stop]
         E_ion_div = Eion[index_start:index_stop]
