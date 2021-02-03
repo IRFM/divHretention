@@ -7,7 +7,7 @@ from . import extract_data
 from . import estimate_inventory_with_gp_regression
 
 
-def compute_inventory(filename):
+def run(filename):
     R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
         atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
         extract_data(filename)
@@ -20,24 +20,7 @@ def compute_inventory(filename):
                           angles_atoms, ion_flux_div, atom_flux_div, filename)
 
     # compute inventory as a function of temperature and concentration
-
-    inv, sig, points_x, points_y, sim_points = \
-        estimate_inventory_with_gp_regression()
-
-    inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
-    sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
-
-    # compute inventory (H/m) along divertor
-    e = 12e-3  # monoblock thickness (m)
-    inventories = []  # inventory in H/m
-    for temperature, concentration in zip(T, c_max):
-        inventories.append(float(inv_T_c(temperature, concentration))/e)
-    inventories = [
-        float(inv_T_c(T_, c)) for T_, c in zip(T, c_max)]
-    sigmas = [
-        float(sig_inv(T_, c)) for T_, c in zip(T, c_max)]
-    inventories, sigmas = np.array(inventories), np.array(sigmas)
-    inventories *= 1/e   # convert in H/m
+    inventories, sigmas, inv_T_c, sig_inv = compute_inventory(T, c_max)
 
     # output dict
     class Output:
@@ -55,7 +38,30 @@ def compute_inventory(filename):
     return output
 
 
-def compute_c_max(T, E_ion, E_atom, angles_ion, angles_atom, ion_flux, atom_flux, filename):
+def compute_inventory(T, c_max):
+    inv, sig, points_x, points_y, sim_points = \
+        estimate_inventory_with_gp_regression()
+
+    inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
+    sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
+
+    # compute inventory (H/m) along divertor
+    e = 12e-3  # monoblock thickness (m)
+    inventories = []  # inventory in H/m
+    for temperature, concentration in zip(T, c_max):
+        inventories.append(float(inv_T_c(temperature, concentration))/e)
+    inventories = [
+        float(inv_T_c(T_, c)) for T_, c in zip(T, c_max)]
+    sigmas = [
+        float(sig_inv(T_, c)) for T_, c in zip(T, c_max)]
+    inventories, sigmas = np.array(inventories), np.array(sigmas)
+    inventories *= 1/e   # convert in H/m
+    return inventories, sigmas, inv_T_c, sig_inv
+
+
+def compute_c_max(
+        T, E_ion, E_atom, angles_ion, angles_atom,
+        ion_flux, atom_flux, filename):
     # Diffusion coefficient Fernandez et al Acta Materialia (2015)
     # https://doi.org/10.1016/j.actamat.2015.04.052
     D_0_W = 1.9e-7
@@ -65,13 +71,22 @@ def compute_c_max(T, E_ion, E_atom, angles_ion, angles_atom, ion_flux, atom_flux
 
     # implantation ranges
     implantation_range_ions = [
-        float(implantation_range(energy, angle)) for energy, angle in zip(E_ion, angles_ion)]
+        float(implantation_range(energy, angle))
+        for energy, angle in zip(E_ion, angles_ion)]
     implantation_range_atoms = [
-        float(implantation_range(energy, angle)) for energy, angle in zip(E_atom, angles_atom)]
+        float(implantation_range(energy, angle))
+        for energy, angle in zip(E_atom, angles_atom)]
 
     # reflection coefficients
-    reflection_coeff_ions = np.array([float(reflection_coeff(energy, angle)) for energy, angle in zip(E_ion, angles_ion)])
-    reflection_coeff_atoms = np.array([float(reflection_coeff(energy, angle)) for energy, angle in zip(E_atom, angles_atom)])
+    reflection_coeff_ions = [
+        float(reflection_coeff(energy, angle))
+        for energy, angle in zip(E_ion, angles_ion)]
+    reflection_coeff_atoms = [
+        float(reflection_coeff(energy, angle))
+        for energy, angle in zip(E_atom, angles_atom)]
+
+    reflection_coeff_ions = np.array(reflection_coeff_ions)
+    reflection_coeff_atoms = np.array(reflection_coeff_atoms)
     if "Julien" in filename:  # TODO remove this
         reflection_coeff_ions = 0
         reflection_coeff_atoms = 0
