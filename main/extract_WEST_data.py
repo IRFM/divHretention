@@ -7,6 +7,7 @@ import numpy as np
 
 
 def extract_data(filename):
+    arc_length_0 = 0.6  # this is the assumed beggining of the target
     if filename.endswith("mat"):
         data = scio.loadmat(filename)
         R = np.hstack(data['R_wall'])
@@ -30,11 +31,15 @@ def extract_data(filename):
         net_heat_flux_div = net_heat_flux[index_start:index_stop]
 
         # arc length for a straight line
-        arc_length_div = ((R_div - R_div[0])**2 + (Z_div - Z_div[0])**2)**0.5
+        # arc_length_div = ((R_div - R_div[0])**2 + (Z_div - Z_div[0])**2)**0.5
+        arc_length_div = np.hstack(data['length_wall'])
+        arc_length_div = arc_length_div[index_start:index_stop]
+        arc_length_div = arc_length_div - arc_length_0
+
     elif filename.endswith(("txt", "csv")):
         data = np.genfromtxt(filename, delimiter=";", names=True)
         R_div, Z_div = [], []
-        arc_length_div = data["s_cell"] - data["s_cell"][0]
+        arc_length_div = data["s_cell"] - arc_length_0
         E_ion_div = data["E_imp_ion"]
         E_atom_div = data["E_imp_atom"]
         angles_ions = data["alpha_V_ion"]
