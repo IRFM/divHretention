@@ -20,12 +20,12 @@ correspondance_dict = {
     },
     "ion_flux": {
         "yscale": "log",
-        "label": "Incident flux (m$^{-2}$ s^{-1}",
+        "label": "Incident flux (m$^{-2}$ s$^{-1}$)",
         "linestyle": "solid"
     },
     "atom_flux": {
         "yscale": "log",
-        "label": "Incident flux (m$^{-2}$ s^{-1}",
+        "label": "Incident flux (m$^{-2}$ s$^{-1}$)",
         "linestyle": "dashed"
     },
     "heat_flux": {
