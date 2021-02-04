@@ -10,29 +10,35 @@ correspondance_dict = {
     },
     "ion_energy": {
         "yscale": "log",
-        "label": "Incident energy (eV)"
+        "label": "Incident energy (eV)",
+        "linestyle": "solid"
     },
     "atom_energy": {
         "yscale": "log",
-        "label": "Incident energy (eV)"
+        "label": "Incident energy (eV)",
+        "linestyle": "dashed"
     },
     "ion_flux": {
         "yscale": "log",
-        "label": "Incident flux (m$^{-2}$ s^{-1}"
+        "label": "Incident flux (m$^{-2}$ s^{-1}",
+        "linestyle": "solid"
     },
     "atom_flux": {
         "yscale": "log",
-        "label": "Incident flux (m$^{-2}$ s^{-1}"
+        "label": "Incident flux (m$^{-2}$ s^{-1}",
+        "linestyle": "dashed"
     },
     "heat_flux": {
         "yscale": "log",
         "label": "Heat flux (W m$^{-2}$)"
     },
     "ion_angle": {
-        "label": "Angle of incidence (°)"
+        "label": "Angle of incidence (°)",
+        "linestyle": "solid"
     },
     "atom_angle": {
-        "label": "Angle of incidence (°)"
+        "label": "Angle of incidence (°)",
+        "linestyle": "dashed"
     },
     "T_surf": {
         "label": r"$T_\mathrm{surface}$ (K)"
@@ -53,41 +59,77 @@ correspondance_dict = {
 class plot_along_divertor():
     def __init__(
             self, filenames=[], quantities=["sigma_inv"],
-            figsize=(8, 8), plot_sigma=True, **kwargs):
+            figsize=(8, 8), plot_sigma=True, overlap_ions_atoms=True,
+            colors=None, **kwargs):
 
-        self.fig, self.axs = \
-            plt.subplots(
-                figsize=figsize, nrows=len(quantities),
-                ncols=1, sharex="col", **kwargs)
         self.count = 0
         self.filenames = []
         self.quantities = quantities
         self.plot_sigma = plot_sigma
+        self.overlap_ions_atoms = overlap_ions_atoms
+        self.nrows, self.axs_ids = self.compute_nrows()
+        self.fig, self.axs = \
+            plt.subplots(
+                figsize=figsize, nrows=self.nrows,
+                ncols=1, sharex="col", **kwargs)
+        if colors is None:
+            colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        for filename, color in zip(filenames, colors):
+            self.add_case(filename, color)
 
-        for filename in filenames:
-            self.add_case(filename)
+    def compute_nrows(self):
 
-    def add_case(self, filename):
+        if not self.overlap_ions_atoms:
+            N = len(self.quantities)
+            axs_ids = [i for i in range(N)]
+        else:
+            N = 0
+            axs_ids = []
+            suffixes = {}
+            for quantity in self.quantities:
+                if quantity.endswith("_energy"):
+                    if "_energy" not in suffixes:
+                        suffixes["_energy"] = N
+                        axs_ids.append(N)
+                        N += 1
+                    else:
+                        axs_ids.append(suffixes["_energy"])
+                        N += 0
+                else:
+                    axs_ids.append(N)
+                    N += 1
+
+        return N, axs_ids
+
+    def add_case(self, filename, color):
         self.count += 1
         self.filenames.append(filename)
 
         label = "Case {}".format(self.count)
         correspondance_dict = create_correspondance_dict(filename)
         arc_length = correspondance_dict["arc_length"]["var"]
-        if len(self.quantities) == 1:
+        if self.nrows == 1:
             axs = [self.axs]
         else:
             axs = self.axs
-        for quantity, ax in zip(self.quantities, axs):
+        for quantity, ax_id in zip(self.quantities, self.axs_ids):
             if quantity not in correspondance_dict:
                 raise ValueError(quantity + " is unknown")
-            plt.sca(ax)
+            plt.sca(axs[ax_id])
             if "yscale" in correspondance_dict[quantity]:
                 plt.yscale(correspondance_dict[quantity]["yscale"])
             if "label" in correspondance_dict[quantity]:
                 plt.ylabel(correspondance_dict[quantity]["label"])
+
             line, = plt.plot(
-                arc_length, correspondance_dict[quantity]["var"])
+                arc_length, correspondance_dict[quantity]["var"],
+                color=color)
+
+            # use different linestyles if ions/atoms overlap
+            if self.axs_ids.count(ax_id) > 1:
+                line.set_linestyle(correspondance_dict[quantity]["linestyle"])
+
+            # plot confidence interval
             if quantity == "inventory" and self.plot_sigma:
                 sigma = correspondance_dict["sigma_inv"]["var"]
                 inventory = correspondance_dict[quantity]["var"]
