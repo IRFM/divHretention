@@ -85,17 +85,22 @@ class plot_along_divertor():
         else:
             N = 0
             axs_ids = []
+            all_suffixes = ["_energy", "_angle", "_flux"]
             suffixes = {}
             for quantity in self.quantities:
-                if quantity.endswith("_energy"):
-                    if "_energy" not in suffixes:
-                        suffixes["_energy"] = N
-                        axs_ids.append(N)
-                        N += 1
-                    else:
-                        axs_ids.append(suffixes["_energy"])
-                        N += 0
-                else:
+                has_suffix = False
+                for suffix in all_suffixes:
+                    if quantity.endswith(suffix):
+                        has_suffix = True
+                        if suffix not in suffixes:
+                            suffixes[suffix] = N
+                            axs_ids.append(N)
+                            N += 1
+                        else:
+                            axs_ids.append(suffixes[suffix])
+                            N += 0
+
+                if not has_suffix:
                     axs_ids.append(N)
                     N += 1
 
@@ -175,62 +180,14 @@ class plot_T_c_inv_along_divertor(plot_along_divertor):
             **kwargs)
 
 
-# class plot_particle_exposure_along_divertor(plot_along_divertor):
-#     def __init__(self, filenames=[], **kwargs):
-
-#         super().__init__(
-#             quantities=["T_surf", "c_surf", "inventory"],
-#             filenames=filenames,
-#             **kwargs)
-
-class plot_particle_exposure_along_divertor():
-    def __init__(
-            self, filenames=[], figsize=(8, 8), **kwargs):
-
-        self.fig, self.axs = \
-            plt.subplots(
-                figsize=figsize, nrows=3,
-                ncols=1, sharex="col", **kwargs)
-        self.count = 0
-        self.filenames = []
-
-        plt.sca(self.axs[0])
-        plt.ylabel("Incident flux (H m$^{-2}$ s^{-1}")
-        plt.yscale("log")
-        plt.sca(self.axs[1])
-        plt.ylabel("Incident energy (eV)")
-        plt.yscale("log")
-        plt.sca(self.axs[2])
-        plt.ylabel("Angle of incidence (°)")
-        plt.xlabel("Distance along divertor (m)")
-        for filename in filenames:
-            self.add_case(filename)
-
-    def add_case(self, filename):
-        self.count += 1
-        self.filenames.append(filename)
-
-        label = "Case {}".format(self.count)
-        R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
-            atom_flux_div, net_heat_flux_div, angles_ions, \
-            angles_atoms, data = extract_data(filename)
-
-        # fluxes
-        line, = self.axs[0].plot(arc_length_div, ion_flux_div, label=label)
-        self.axs[0].plot(
-            arc_length_div, atom_flux_div, label=label,
-            color=line.get_color(), linestyle="dashed")
-        # energy
-        line, = self.axs[1].plot(arc_length_div, E_ion_div, label=label)
-        self.axs[1].plot(
-            arc_length_div, E_atom_div, label=label,
-            color=line.get_color(), linestyle="dashed")
-        # angle
-        line, = self.axs[2].plot(arc_length_div, angles_ions, label=label)
-        self.axs[2].plot(
-            arc_length_div, angles_atoms, label=label,
-            color=line.get_color(), linestyle="dashed")
-        self.axs[2].legend()
-
-    def show(self):
-        plt.show()
+class plot_particle_exposure_along_divertor(plot_along_divertor):
+    def __init__(self, filenames=[], **kwargs):
+        quantities = [
+            "atom_flux", "ion_flux",
+            "ion_energy", "atom_energy",
+            "ion_angle", "atom_angle",
+            ]
+        super().__init__(
+            quantities=quantities,
+            filenames=filenames,
+            **kwargs)
