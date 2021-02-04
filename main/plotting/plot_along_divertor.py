@@ -124,52 +124,22 @@ def create_correspondance_dict(filename):
     return correspondance_dict
 
 
-class plot_T_c_inv_along_divertor():
-    def __init__(
-            self, filenames=[], figsize=(8, 8), **kwargs):
+class plot_T_c_inv_along_divertor(plot_along_divertor):
+    def __init__(self, filenames=[], **kwargs):
 
-        self.fig, self.axs = \
-            plt.subplots(
-                figsize=figsize, nrows=3,
-                ncols=1, sharex="col", **kwargs)
-        self.count = 0
-        self.filenames = []
+        super().__init__(
+            quantities=["T_surf", "c_surf", "inventory"],
+            filenames=filenames,
+            **kwargs)
 
-        plt.sca(self.axs[0])
-        plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)")
-        plt.sca(self.axs[1])
-        plt.ylabel(r"$T_\mathrm{surface}$ (K)")
-        plt.sca(self.axs[2])
-        plt.ylabel("Inventory per \n unit thickness \n (H/m)")
-        plt.yscale("log")
-        plt.xlabel("Distance along divertor (m)")
-        for filename in filenames:
-            self.add_case(filename)
 
-    def add_case(self, filename):
-        self.count += 1
-        self.filenames.append(filename)
+# class plot_particle_exposure_along_divertor(plot_along_divertor):
+#     def __init__(self, filenames=[], **kwargs):
 
-        label = "Case {}".format(self.count)
-        res = process_file(filename)
-        plt.sca(self.axs[0])
-        plt.yscale("log")
-        plt.plot(res.arc_length, res.concentration, label=label)
-        plt.sca(self.axs[1])
-        plt.plot(res.arc_length, res.temperature, label=label)
-        plt.sca(self.axs[2])
-        line, = plt.plot(res.arc_length, res.inventory, label=label)
-
-        plt.fill_between(
-            res.arc_length,
-            10**(2*res.sigma_inv + np.log10(res.inventory)),
-            10**(-2*res.sigma_inv + np.log10(res.inventory)),
-            facecolor=line.get_color(), alpha=0.3)
-        plt.legend()
-
-    def show(self):
-        plt.show()
-
+#         super().__init__(
+#             quantities=["T_surf", "c_surf", "inventory"],
+#             filenames=filenames,
+#             **kwargs)
 
 class plot_particle_exposure_along_divertor():
     def __init__(
