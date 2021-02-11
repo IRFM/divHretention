@@ -72,6 +72,7 @@ class plot_along_divertor():
             plt.subplots(
                 figsize=figsize, nrows=self.nrows,
                 ncols=1, sharex="col", **kwargs)
+        self.axs[-1].set_xlabel("Distance along divertor (m)")
         if colors is None:
             colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
         for filename, color in zip(filenames, colors):
@@ -90,7 +91,7 @@ class plot_along_divertor():
             for quantity in self.quantities:
                 has_suffix = False
                 for suffix in all_suffixes:
-                    if quantity.endswith(suffix):
+                    if quantity.endswith(suffix) and quantity != "heat_flux":
                         has_suffix = True
                         if suffix not in suffixes:
                             suffixes[suffix] = N
