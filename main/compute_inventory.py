@@ -87,9 +87,9 @@ def compute_c_max(
 
     reflection_coeff_ions = np.array(reflection_coeff_ions)
     reflection_coeff_atoms = np.array(reflection_coeff_atoms)
-    if "Julien" in filename:  # TODO remove this
-        reflection_coeff_ions = 0
-        reflection_coeff_atoms = 0
+    # if "Julien" in filename:  # TODO remove this
+    #     reflection_coeff_ions = 0
+    #     reflection_coeff_atoms = 0
 
     # compute c_max
     c_max = (1 - reflection_coeff_ions)*ion_flux*implantation_range_ions/D + \

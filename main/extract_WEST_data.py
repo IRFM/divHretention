@@ -38,17 +38,17 @@ def extract_data(filename):
         arc_length_div = arc_length_div[index_start:index_stop]
         arc_length_div = arc_length_div - arc_length_0
 
-    elif filename.endswith(("txt", "csv")):
+    elif filename.endswith(("csv")):
         data = np.genfromtxt(filename, delimiter=";", names=True)
         R_div, Z_div = [], []
-        arc_length_div = data["s_cell"] - arc_length_0
-        E_ion_div = data["E_imp_ion"]
-        E_atom_div = data["E_imp_atom"]
-        angles_ions = data["alpha_V_ion"]
-        angles_atoms = data["alpha_V_atom"]
-        ion_flux_div = data["flux_imp_ion"]
-        atom_flux_div = data["flux_imp_atom"]
-        net_heat_flux_div = data["net_energy_flux"]
+        arc_length_div = data["s_cell_m"] - arc_length_0
+        E_ion_div = data["E_imp_ion_eV"]
+        E_atom_div = data["E_imp_atom_eV"]
+        angles_ions = data["alpha_V_ion_deg"]
+        angles_atoms = data["alpha_V_atom_deg"]
+        ion_flux_div = data["flux_inc_ion_m2s1"]
+        atom_flux_div = data["flux_inc_atom_m2s1"]
+        net_heat_flux_div = data["net_energy_flux_Wm2"]
 
     return R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
         atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data
