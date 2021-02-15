@@ -27,7 +27,7 @@ def process_file(filename, inventory=True):
 
     if inventory:
         # compute inventory as a function of temperature and concentration
-        inventories, sigmas, inv_T_c, sig_inv = compute_inventory(T, c_max)
+        inventories, sigmas = compute_inventory(T, c_max)
 
     # output dict
     class Output:
@@ -56,7 +56,7 @@ def compute_inventory(T, c_max):
         float(sig_inv(T_, c)) for T_, c in zip(T, c_max)]
     inventories, sigmas = np.array(inventories), np.array(sigmas)
     inventories *= 1/e   # convert in H/m
-    return inventories, sigmas, inv_T_c, sig_inv
+    return inventories, sigmas
 
 
 def compute_c_max(
