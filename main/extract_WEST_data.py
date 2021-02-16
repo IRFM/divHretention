@@ -18,8 +18,8 @@ def extract_data(filename):
         atom_flux = np.hstack(data['atom_flux'])
         net_heat_flux = np.hstack(data['net_heat_flux'])
         ind_target = np.hstack(data['ind_target'])
-        angles_ions = np.hstack(data["target_strike_angle"])
-        angles_atoms = np.hstack(data["target_strike_angle"])  # TODO verify
+        angles_ions = np.ones(R.shape)*75# np.hstack(data["target_strike_angle"])
+        angles_atoms = np.ones(R.shape)*45#np.hstack(data["target_strike_angle"])  # TODO verify
         index_start = ind_target[0] - 1
         index_stop = ind_target[-1] - 1
         R_div = R[index_start:index_stop]
