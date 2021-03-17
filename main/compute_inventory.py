@@ -61,7 +61,7 @@ def compute_inventory(T, c_max):
 
 def compute_c_max(
         T, E_ion, E_atom, angles_ion, angles_atom,
-        ion_flux, atom_flux, filename):
+        ion_flux, atom_flux, filename, full_export=False):
     # Diffusion coefficient Fernandez et al Acta Materialia (2015)
     # https://doi.org/10.1016/j.actamat.2015.04.052
     D_0_W = 1.9e-7
@@ -87,14 +87,18 @@ def compute_c_max(
 
     reflection_coeff_ions = np.array(reflection_coeff_ions)
     reflection_coeff_atoms = np.array(reflection_coeff_atoms)
-    # if "Julien" in filename:  # TODO remove this
-    #     reflection_coeff_ions = 0
-    #     reflection_coeff_atoms = 0
 
     # compute c_max
-    c_max = (1 - reflection_coeff_ions)*ion_flux*implantation_range_ions/D + \
-        (1 - reflection_coeff_atoms)*atom_flux*implantation_range_atoms/D
-    return c_max
+    c_max_ions = (1 - reflection_coeff_ions) * \
+        ion_flux*implantation_range_ions/D
+    c_max_atoms = (1 - reflection_coeff_atoms) * \
+        atom_flux*implantation_range_atoms/D
+    c_max = c_max_ions + c_max_atoms
+
+    if full_export:
+        return c_max, c_max_ions, c_max_atoms
+    else:
+        return c_max
 
 
 if __name__ == "__main__":
