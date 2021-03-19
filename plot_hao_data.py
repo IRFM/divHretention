@@ -24,7 +24,9 @@ plt.xlabel("Puffing Rate (s$^{-1}$)")
 plt.ylabel("Input Power (MW)")
 plt.show()
 
-my_plot = plot_Tc_map_with_subplots(filenames=filenames, T_bounds=[320, 510])
+my_plot = plot_Tc_map_with_subplots(
+    filenames=filenames,
+    T_bounds=[320, 510],
+    c_bounds=[1e20, 2e23])
 plt.sca(my_plot.axs_bottom[1])
-plt.ylim(top=3e23)
 plt.show()
