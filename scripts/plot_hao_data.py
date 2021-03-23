@@ -1,3 +1,6 @@
+"""
+This script has to be executed at the root of the directory
+"""
 import re
 import os
 import matplotlib.pyplot as plt

@@ -1,3 +1,6 @@
+"""
+This script has to be executed at the root of the directory
+"""
 from main import extract_data, process_file, compute_c_max, compute_inventory
 import matplotlib.pyplot as plt
 import numpy as np
