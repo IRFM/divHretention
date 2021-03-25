@@ -33,6 +33,7 @@ divertor_pressure = [
     1.752557796,
 ]
 
+
 # sort arrays
 divertor_pressure = np.array(divertor_pressure)
 numbers = np.array(numbers)
@@ -41,15 +42,21 @@ numbers = numbers[arr1inds[::-1]]
 divertor_pressure = divertor_pressure[arr1inds[::-1]]
 
 inventories = []
+filenames_inner = [
+    "data/exposure_conditions_divertor/ITER/Greg/{}/{}_inner_target.csv".format(number, number) for number in numbers
+    ]
+filenames_outer = [
+    "data/exposure_conditions_divertor/ITER/Greg/{}/{}_outer_target.csv".format(number, number) for number in numbers
+    ]
 
-filenames = ["data/exposure_conditions_divertor/ITER/Greg/{}/ld_tg_o.dat".format(number) for number in numbers]
-for filename in filenames:
+for filename in filenames_inner:
+    print(filename)
     res = main.process_file(filename)
     inventory = np.trapz(res.inventory, res.arc_length)
     inventories.append(inventory)
 
-filenames = ["data/exposure_conditions_divertor/ITER/Greg/{}/ld_tg_i.dat".format(number) for number in numbers]
-for i, filename in enumerate(filenames):
+
+for i, filename in enumerate(filenames_outer):
     res = main.process_file(filename)
     inventory = np.trapz(res.inventory, res.arc_length)
     inventories[i] += inventory
@@ -61,8 +68,13 @@ plt.ylabel("Divertor H inventory (H.m$^{-1}$)")
 plt.show()
 
 my_plot = plot_Tc_map_with_subplots(
-    filenames=filenames,
+    filenames=filenames_inner,
     T_bounds=[320, 1200],
     c_bounds=[1e20, 2e23])
-plt.sca(my_plot.axs_bottom[1])
+plt.show()
+
+my_plot = plot_Tc_map_with_subplots(
+    filenames=filenames_outer,
+    T_bounds=[320, 1200],
+    c_bounds=[1e20, 2e23])
 plt.show()
