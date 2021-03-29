@@ -94,8 +94,8 @@ def compute_total_inventory(x_max='max'):
 inventories_IVT, inventories_OVT = compute_total_inventory()
 inventories = np.array(inventories_IVT) + np.array(inventories_OVT)
 plt.figure()
-line_tot, = plt.plot(divertor_pressure, inventories, marker="+")
-line_inner, = plt.plot(divertor_pressure, inventories_IVT, marker="+")
+line_tot, = plt.plot(divertor_pressure, inventories, marker="+", color="tab:brown")
+line_inner, = plt.plot(divertor_pressure, inventories_IVT, marker="+", color="tab:red")
 plt.fill_between(
     divertor_pressure, np.zeros(len(divertor_pressure)), inventories_IVT,
     alpha=0.3, color=line_inner.get_color())
