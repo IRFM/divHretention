@@ -186,9 +186,9 @@ axs[2].fill_between(
 # plt.annotate("Inner strike point", (1.05*Ps[-1], ratio_ions_inner_sp[-1]), color=line_spi.get_color())
 # plt.annotate("Outer strike point", (1.05*Ps[-1], ratio_ions_outer_sp[-1]), color=line_spo.get_color())
 # plt.annotate("Private zone", (1.05*Ps[-1], ratio_ions_private_zone[-1]), color=line_pz.get_color())
-axs[0].set_title("ISP")
-axs[1].set_title("OSP")
-axs[2].set_title("Private zone")
+axs[0].set_title("ISP", color=line_spi.get_color())
+axs[1].set_title("OSP", color=line_spo.get_color())
+axs[2].set_title("Private zone", color=line_pz.get_color())
 
 axs[0].annotate("Ions", (3e21, 0.7), color="white", weight="bold")
 axs[0].annotate("Atoms", (3.4e21, 0.9), color="white", weight="bold")

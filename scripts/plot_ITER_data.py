@@ -104,6 +104,7 @@ plt.fill_between(
     alpha=0.3, color=line_tot.get_color())
 plt.xlabel("Divertor neutral pressure (Pa)")
 plt.ylabel("Divertor H inventory (H)")
+
 plt.ylim(bottom=0)
 plt.xlim(left=divertor_pressure[0], right=divertor_pressure[-1] + 1.5)
 plt.annotate("IVT", (divertor_pressure[-1]+0.2, 0.4e22), color=line_inner.get_color(), weight="bold")
@@ -183,7 +184,7 @@ for i, results in enumerate([res_inner, res_outer]):
         inventories.append(res.inventory[sp_loc_index])
         sigmas.append(res.sigma_inv[sp_loc_index])
     sigmas = np.array(sigmas)
-    line, = plt.plot(divertor_pressure, inventories, label=labels[i], marker="+")
+    line, = plt.plot(divertor_pressure, inventories, label=labels[i], marker="+", color="tab:blue")
     plt.fill_between(
         divertor_pressure,
         10**(2*sigmas + np.log10(inventories)),
