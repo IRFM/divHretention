@@ -9,6 +9,9 @@ from matplotlib import cm
 from matplotlib.colors import Normalize
 from scipy.stats import linregress
 
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif', size=12)
+
 input_power = 0.449
 Ps = [
     4.4e20,

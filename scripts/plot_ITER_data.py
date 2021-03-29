@@ -13,6 +13,9 @@ from main import plot_Tc_map_with_subplots, plot_along_divertor, extract_data, c
 import main
 from scipy.interpolate import interp1d
 
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif', size=12)
+
 numbers = [
     2404,
     2403,
