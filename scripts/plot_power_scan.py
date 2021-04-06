@@ -127,11 +127,11 @@ for i, puff_rate in enumerate([2.5e21, 4.44e21]):
         plt.annotate("Inner strike point", (1.05*input_powers[-1], inventories_inner_sp[-1]), color=line_spi.get_color())
         plt.annotate("Outer strike point", (1.05*input_powers[-1], inventories_outer_sp[-1]), color=line_spo.get_color())
         plt.annotate("Private zone", (1.05*input_powers[-1], inventories_pz[-1]), color=line_pz.get_color())
-plt.ylim(bottom=0, top=1e22)
+plt.ylim(bottom=0, top=1.1e22)
 plt.xlim(left=0, right=input_powers[-1] + 0.8)
 plt.legend(loc="upper left")
 plt.xlabel("Input power (MW)")
-plt.ylabel("Divertor inventory (H)")
+plt.ylabel("Inventory (H m$^{-1}$)")
 plt.tight_layout()
 
 plt.savefig("Figures/WEST/inventory_at_sps_and_private_zone_vs_input_power.pdf")
@@ -178,8 +178,8 @@ axs[0].fill_between(
 axs[0].fill_between(
     input_powers, np.zeros(len(input_powers)) + 1, ratio_ions_inner_sp,
     facecolor='tab:orange', alpha=0.3)
-axs[0].annotate("Ions", (0.5, 0.92), color="white", weight="bold")
-axs[0].annotate("Atoms", (0.6, 0.7), color="white", weight="bold")
+axs[0].annotate("Atoms", (0.5, 0.92), color="white", weight="bold")
+axs[0].annotate("Ions", (0.6, 0.7), color="white", weight="bold")
 
 line_spo, = axs[1].plot(input_powers, ratio_ions_outer_sp, marker="+", color="tab:blue")
 axs[1].fill_between(
@@ -188,8 +188,8 @@ axs[1].fill_between(
 axs[1].fill_between(
     input_powers, np.zeros(len(input_powers)) + 1, ratio_ions_outer_sp,
     facecolor='tab:orange', alpha=0.3)
-axs[1].annotate("Ions", (0.5, 0.92), color="white", weight="bold")
-axs[1].annotate("Atoms", (0.6, 0.7), color="white", weight="bold")
+axs[1].annotate("Atoms", (0.5, 0.92), color="white", weight="bold")
+axs[1].annotate("Ions", (0.6, 0.7), color="white", weight="bold")
 
 
 line_pz, = axs[2].plot(input_powers, ratio_ions_private_zone, marker="+", color="tab:orange")
