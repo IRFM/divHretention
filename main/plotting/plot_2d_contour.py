@@ -55,12 +55,13 @@ class plot_Tc_map_with_subplots():
         # plot the inventory contour
         locator = ticker.LogLocator(base=10)
         self.CS = plt.contourf(XX, YY, values, locator=locator, levels=levels)
-
+        for c in self.CS.collections:
+            c.set_edgecolor("face")
         # plt.colorbar(CS, label=r"Inventory per monoblock (H)", ticks=locator)
         plt.yscale("log")
-        plt.tick_params(axis='both', which='major', labelsize=13)
-        plt.xlabel(r"$T_\mathrm{surface}$ (K)", fontsize=12)
-        plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)", fontsize=12)
+        plt.tick_params(axis='both', which='major')#, labelsize=13)
+        plt.xlabel(r"$T_\mathrm{surface}$ (K)")#, fontsize=12)
+        plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)")#, fontsize=12)
 
     def add_case(self, filename):
         self.count += 1
