@@ -13,7 +13,7 @@ inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
 sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
 
 
-def process_file(filename, inventory=True):
+def process_file(filename, inventory=True, time=1e7):
     R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
         atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
         extract_data(filename)
@@ -27,7 +27,7 @@ def process_file(filename, inventory=True):
 
     if inventory:
         # compute inventory as a function of temperature and concentration
-        inventories, sigmas = compute_inventory(T, c_max)
+        inventories, sigmas = compute_inventory(T, c_max, time=time)
 
     # output dict
     class Output:
@@ -44,16 +44,28 @@ def process_file(filename, inventory=True):
     return output
 
 
-def compute_inventory(T, c_max):
+def compute_inventory(T, c_max, time):
+
+    if time != 1e7:  # if time is not the default value
+        inv_local, sig_local, points_x_local, points_y_local, sim_points_local = \
+            estimate_inventory_with_gp_regression(time=time)
+
+        inv_T_c_local = interp2d(
+            points_x_local, points_y_local, inv_local, kind='cubic')
+        sig_inv_local = interp2d(
+            points_x_local, points_y_local, sig_local, kind='cubic')
+    else:
+        inv_T_c_local = inv_T_c
+        sig_inv_local = sig_inv
     # compute inventory (H/m) along divertor
     e = 12e-3  # monoblock thickness (m)
     inventories = []  # inventory in H/m
     for temperature, concentration in zip(T, c_max):
-        inventories.append(float(inv_T_c(temperature, concentration))/e)
+        inventories.append(float(inv_T_c_local(temperature, concentration))/e)
     inventories = [
-        float(inv_T_c(T_, c)) for T_, c in zip(T, c_max)]
+        float(inv_T_c_local(T_, c)) for T_, c in zip(T, c_max)]
     sigmas = [
-        float(sig_inv(T_, c)) for T_, c in zip(T, c_max)]
+        float(sig_inv_local(T_, c)) for T_, c in zip(T, c_max)]
     inventories, sigmas = np.array(inventories), np.array(sigmas)
     inventories *= 1/e   # convert in H/m
     return inventories, sigmas
