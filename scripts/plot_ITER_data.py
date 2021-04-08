@@ -213,7 +213,7 @@ for i, results in enumerate([filenames_inner, filenames_outer]):
         T = 1.1e-4*net_heat_flux + 323
         c_max, c_max_ions, c_max_atoms = compute_c_max(
             T, E_ion, E_atom, angles_ion, angles_atom,
-            ion_flux, atom_flux, filename, full_export=True)
+            ion_flux, atom_flux, full_export=True)
         inventories, sigmas = compute_inventory(T, c_max, time=time)
 
         inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions, time=time)
