@@ -24,7 +24,7 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
 
     # Compute the surface H concentration
     c_max = compute_c_max(T, E_ion_div, E_atom_div, angles_ions,
-                          angles_atoms, ion_flux_div, atom_flux_div, filename)
+                          angles_atoms, ion_flux_div, atom_flux_div)
 
     if inventory:
         # compute inventory as a function of temperature and concentration
