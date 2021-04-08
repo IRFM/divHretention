@@ -48,7 +48,7 @@ for s in strings:
                     float(row[-3])))
     # extrapolate to small times
     a, b = fit_powerlaw(t, inventory)
-    t_ = np.logspace(2, 7, num=100)
+    t_ = np.logspace(2, 4, num=100)
     inventory_ = a*t_**b
 
     data[-1]["t"] = t_.tolist() + t
