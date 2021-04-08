@@ -12,11 +12,17 @@ GP = estimate_inventory_with_gp_regression(time=DEFAULT_TIME)
 
 
 def inv_T_c(T, c):
-    return 10**GP((T, np.log10(c)))[0][0]
+    if c == 0:
+        return 0
+    else:
+        return 10**GP((T, np.log10(c)))[0][0]
 
 
 def sig_inv(T, c):
-    return GP((T, np.log10(c)))[1][0]
+    if c == 0:
+        return 0
+    else:
+        return GP((T, np.log10(c)))[1][0]
 
 
 def process_file(filename, inventory=True, time=DEFAULT_TIME):
