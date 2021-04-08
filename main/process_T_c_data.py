@@ -46,9 +46,13 @@ for s in strings:
                 2*(float(row[-1]) +
                     float(row[-2]) +
                     float(row[-3])))
+    # extrapolate to small times
+    a, b = fit_powerlaw(t, inventory)
+    t_ = np.logspace(2, 7, num=100)
+    inventory_ = a*t_**b
 
-    data[-1]["t"] = t
-    data[-1]["inventory"] = inventory
+    data[-1]["t"] = t_.tolist() + t
+    data[-1]["inventory"] = inventory_.tolist() + inventory
 
 # extract low temp data
 L = 30e-3
