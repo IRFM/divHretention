@@ -13,6 +13,13 @@ inv, sig, points_x, points_y, sim_points = \
 inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
 sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
 
+database_inv_sig = {
+    DEFAULT_TIME: {
+        "inv": inv_T_c,
+        "sig": sig_inv
+    }
+}
+
 
 def process_file(filename, inventory=True, time=DEFAULT_TIME):
     R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
@@ -47,7 +54,7 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
 
 def compute_inventory(T, c_max, time):
 
-    if time != DEFAULT_TIME:  # if time is not the default value
+    if time not in database_inv_sig.keys():  # if time is not the default value
         inv_local, sig_local, points_x_local, points_y_local, sim_points_local = \
             estimate_inventory_with_gp_regression(time=time)
 
@@ -55,9 +62,13 @@ def compute_inventory(T, c_max, time):
             points_x_local, points_y_local, inv_local, kind='cubic')
         sig_inv_local = interp2d(
             points_x_local, points_y_local, sig_local, kind='cubic')
+        database_inv_sig[time] = {
+            "inv": inv_T_c_local,
+            "sig": sig_inv_local
+        }
     else:
-        inv_T_c_local = inv_T_c
-        sig_inv_local = sig_inv
+        inv_T_c_local = database_inv_sig[time]["inv"]
+        sig_inv_local = database_inv_sig[time]["sig"]
     # compute inventory (H/m) along divertor
     e = 12e-3  # monoblock thickness (m)
     inventories = []  # inventory in H/m
