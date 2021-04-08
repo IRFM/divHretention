@@ -6,14 +6,15 @@ from . import implantation_range, reflection_coeff
 from . import extract_data
 from . import estimate_inventory_with_gp_regression
 
+DEFAULT_TIME = 1e7
 inv, sig, points_x, points_y, sim_points = \
-    estimate_inventory_with_gp_regression()
+    estimate_inventory_with_gp_regression(time=DEFAULT_TIME)
 
 inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
 sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
 
 
-def process_file(filename, inventory=True, time=1e7):
+def process_file(filename, inventory=True, time=DEFAULT_TIME):
     R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
         atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
         extract_data(filename)
@@ -46,7 +47,7 @@ def process_file(filename, inventory=True, time=1e7):
 
 def compute_inventory(T, c_max, time):
 
-    if time != 1e7:  # if time is not the default value
+    if time != DEFAULT_TIME:  # if time is not the default value
         inv_local, sig_local, points_x_local, points_y_local, sim_points_local = \
             estimate_inventory_with_gp_regression(time=time)
 
