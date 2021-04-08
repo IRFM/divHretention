@@ -26,6 +26,8 @@ filenames = [
     folder + "West-LSN-P{:.1e}-IP{:.3f}MW.csv".format(puff_rate, input_power)
     for input_power in input_powers]
 
+time = 1e7  # s
+
 colormap = cm.inferno
 sm = plt.cm.ScalarMappable(cmap=colormap, norm=Normalize(vmin=min(input_powers), vmax=max(input_powers)))
 colours = [colormap((IP - min(input_powers))/max(input_powers)) for IP in input_powers]
@@ -53,7 +55,7 @@ for puff_rate in [2.5e21, 4.44e21]:
 
     inventories = []
     for filename in filenames:
-        res = process_file(filename)
+        res = process_file(filename, time=time)
         inventory = np.trapz(res.inventory, res.arc_length)
         inventories.append(inventory)
 
@@ -93,7 +95,7 @@ for i, puff_rate in enumerate([2.5e21, 4.44e21]):
     inventories_pz, sigmas_pz = [], []
 
     for filename in filenames:
-        res = process_file(filename)
+        res = process_file(filename, time=time)
         inner_sp_loc_index = np.where(np.abs(res.arc_length-0.20) < 0.005)[0][0]
         outer_sp_loc_index = np.where(np.abs(res.arc_length-0.36) < 0.005)[0][0]
         private_zone_sp_loc_index = np.where(np.abs(res.arc_length-0.28) < 0.005)[0][0]
@@ -156,10 +158,10 @@ for filename in filenames:
     c_max, c_max_ions, c_max_atoms = compute_c_max(
         T, E_ion, E_atom, angles_ion, angles_atom,
         ion_flux, atom_flux, filename, full_export=True)
-    inventories, sigmas = compute_inventory(T, c_max)
+    inventories, sigmas = compute_inventory(T, c_max, time=time)
 
-    inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions)
-    inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms)
+    inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions, time=time)
+    inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms, time=time)
 
     inner_sp_loc_index = np.where(np.abs(res.arc_length-0.20) < 0.005)[0][0]
     outer_sp_loc_index = np.where(np.abs(res.arc_length-0.36) < 0.005)[0][0]

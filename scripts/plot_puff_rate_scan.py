@@ -32,6 +32,7 @@ colours = [colormap((P - min(Ps))/max(Ps)) for P in Ps]
 
 filenames = ["data/exposure_conditions_divertor/WEST/Hao/West-LSN-P{:.1e}-IP{:.3}MW.csv".format(P, input_power) for P in Ps]
 
+time = 1e7  # s
 # #### plot inventory along divertor
 
 my_plot = plot_along_divertor(
@@ -71,10 +72,10 @@ for i, filename in enumerate(filenames):
     c_max, c_max_ions, c_max_atoms = compute_c_max(
         T, E_ion, E_atom, angles_ion, angles_atom,
         ion_flux, atom_flux, filename, full_export=True)
-    inventories, sigmas = compute_inventory(T, c_max)
+    inventories, sigmas = compute_inventory(T, c_max, time=time)
     integrated_inventories.append(np.trapz(inventories, arc_length))
-    inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions)
-    inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms)
+    inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions, time=time)
+    inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms, time=time)
 
     line, = plt.plot(arc_length, inventories_ions/inventories, color=colours[i])
 

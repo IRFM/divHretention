@@ -40,7 +40,7 @@ divertor_pressure = [
     1.752557796,
 ]
 
-
+time = 1e7  # s
 # sort arrays
 divertor_pressure = np.array(divertor_pressure)
 numbers = np.array(numbers)
@@ -48,7 +48,7 @@ arr1inds = divertor_pressure.argsort()
 numbers = numbers[arr1inds[::1]]
 divertor_pressure = divertor_pressure[arr1inds[::1]]
 
-colormap = cm.magma
+colormap = cm.cividis
 sm = plt.cm.ScalarMappable(cmap=colormap, norm=Normalize(vmin=min(divertor_pressure), vmax=max(divertor_pressure)))
 
 colours = [colormap((P - min(divertor_pressure))/max(divertor_pressure)) for P in divertor_pressure]
@@ -214,10 +214,10 @@ for i, results in enumerate([filenames_inner, filenames_outer]):
         c_max, c_max_ions, c_max_atoms = compute_c_max(
             T, E_ion, E_atom, angles_ion, angles_atom,
             ion_flux, atom_flux, filename, full_export=True)
-        inventories, sigmas = compute_inventory(T, c_max)
+        inventories, sigmas = compute_inventory(T, c_max, time=time)
 
-        inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions)
-        inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms)
+        inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions, time=time)
+        inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms, time=time)
 
         # plt.figure(i)
         # line, = plt.plot(arc_length, inventories_ions/inventories)
