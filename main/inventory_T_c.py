@@ -1,6 +1,6 @@
 import numpy as np
 import scipy as sp
-from scipy.interpolate import griddata, interp2d, interp1d
+from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 from matplotlib import ticker
 from .process_T_c_data import points, data
@@ -55,7 +55,8 @@ def estimate_inventory_with_gp_regression(time=1e7):
     gp_y = np.log10(np.logspace(20, 23, Ny))
     gp_coords = [(i, j) for i in gp_x for j in gp_y]
     mu, sig = GP(gp_coords)
-    return 10**mu, sig, gp_x, 10**gp_y, sim_points
+
+    return GP
 
 
 if __name__ == "__main__":

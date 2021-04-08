@@ -1,17 +1,27 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.interpolate import interp2d
 
 from . import implantation_range, reflection_coeff
 from . import extract_data
 from . import estimate_inventory_with_gp_regression
 
 DEFAULT_TIME = 1e7
-inv, sig, points_x, points_y, sim_points = \
-    estimate_inventory_with_gp_regression(time=DEFAULT_TIME)
 
-inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
-sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
+GP = estimate_inventory_with_gp_regression(time=DEFAULT_TIME)
+
+
+def inv_T_c(T, c):
+    if c == 0:
+        return 0
+    else:
+        return 10**GP((T, np.log10(c)))[0][0]
+
+
+def sig_inv(T, c):
+    if c == 0:
+        return 0
+    else:
+        return GP((T, np.log10(c)))[1][0]
 
 
 def process_file(filename, inventory=True, time=DEFAULT_TIME):
@@ -48,21 +58,24 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
 def compute_inventory(T, c_max, time):
 
     if time != DEFAULT_TIME:  # if time is not the default value
-        inv_local, sig_local, points_x_local, points_y_local, sim_points_local = \
-            estimate_inventory_with_gp_regression(time=time)
+        GP = estimate_inventory_with_gp_regression(time=time)
 
-        inv_T_c_local = interp2d(
-            points_x_local, points_y_local, inv_local, kind='cubic')
-        sig_inv_local = interp2d(
-            points_x_local, points_y_local, sig_local, kind='cubic')
+        def inv_T_c_local(T, c):
+            if c == 0:
+                return 0
+            else:
+                return 10**GP((T, np.log10(c)))[0][0]
+
+        def sig_inv_local(T, c):
+            if c == 0:
+                return 0
+            else:
+                return GP((T, np.log10(c)))[1][0]
     else:
         inv_T_c_local = inv_T_c
         sig_inv_local = sig_inv
     # compute inventory (H/m) along divertor
     e = 12e-3  # monoblock thickness (m)
-    inventories = []  # inventory in H/m
-    for temperature, concentration in zip(T, c_max):
-        inventories.append(float(inv_T_c_local(temperature, concentration))/e)
     inventories = [
         float(inv_T_c_local(T_, c)) for T_, c in zip(T, c_max)]
     sigmas = [
