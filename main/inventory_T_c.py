@@ -55,7 +55,8 @@ def estimate_inventory_with_gp_regression(time=1e7):
     gp_y = np.log10(np.logspace(20, 23, Ny))
     gp_coords = [(i, j) for i in gp_x for j in gp_y]
     mu, sig = GP(gp_coords)
-    return 10**mu, sig, gp_x, 10**gp_y, sim_points
+
+    return GP
 
 
 if __name__ == "__main__":
