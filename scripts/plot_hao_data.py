@@ -15,7 +15,7 @@ for f in os.listdir(folder):
 
 points = []
 for filename in filenames:
-    match_number = re.compile('-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?')
+    match_number = re.compile(r'-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?')
     e = re.findall(match_number, filename)
     points.append(
         [float(e[0])*10**float(e[1]), float(e[2])]

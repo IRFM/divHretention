@@ -2,10 +2,15 @@
 This script has to be executed at the root of the directory
 """
 from main import extract_data, process_file, compute_c_max, compute_inventory
+from main import plot_along_divertor
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
 from matplotlib.colors import Normalize
+from scipy.stats import linregress
+
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif', size=12)
 
 input_power = 0.449
 Ps = [
@@ -21,22 +26,44 @@ Ps = [
     4.36e21,
     4.7e21,
 ]
-
-plt.figure(2)
 colormap = cm.viridis
 sm = plt.cm.ScalarMappable(cmap=colormap, norm=Normalize(vmin=min(Ps), vmax=max(Ps)))
-plt.colorbar(sm, label="Puff rate (mol.s$^{-1}$)")
+colours = [colormap((P - min(Ps))/max(Ps)) for P in Ps]
 
+filenames = ["data/exposure_conditions_divertor/WEST/Hao/West-LSN-P{:.1e}-IP{:.3}MW.csv".format(P, input_power) for P in Ps]
+
+# #### plot inventory along divertor
+
+my_plot = plot_along_divertor(
+    filenames,
+    quantities=["T_surf", "c_surf", "inventory"],
+    colors=colours,
+    figsize=(6, 5))
+
+plt.tight_layout()
+plt.colorbar(
+    sm, label="Puff rate (mol.s$^{-1}$)",
+    ax=my_plot.axs)
+plt.savefig('Figures/WEST/inventory_along_divertor.pdf')
+plt.savefig('Figures/WEST/inventory_along_divertor.svg')
+
+# #### plot contribution ions along divertor
 inventory_strike_point_inner = []
 inventory_strike_point_outer = []
 inventory_private_zone = []
+
+sigma_strike_point_inner = []
+sigma_strike_point_outer = []
+sigma_private_zone = []
 
 ratio_ions_inner_sp = []
 ratio_ions_outer_sp = []
 ratio_ions_private_zone = []
 
-for P in Ps:
-    filename = "data/exposure_conditions_divertor/WEST/Hao/West-LSN-P{:.1e}-IP{:.3}MW.csv".format(P, input_power)
+integrated_inventories = []
+plt.figure()
+for i, filename in enumerate(filenames):
+
     R, Z, arc_length, E_ion, E_atom, ion_flux, \
         atom_flux, net_heat_flux, angles_ion, angles_atom, data = \
         extract_data(filename)
@@ -45,21 +72,11 @@ for P in Ps:
         T, E_ion, E_atom, angles_ion, angles_atom,
         ion_flux, atom_flux, filename, full_export=True)
     inventories, sigmas = compute_inventory(T, c_max)
-
+    integrated_inventories.append(np.trapz(inventories, arc_length))
     inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions)
     inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms)
 
-    plt.figure(1)
-    line, = plt.plot(arc_length, inventories_ions/inventories, label="P = {:.1e}".format(P) + "mol.s$^{-1}$")
-
-    plt.figure(2)
-    line, = plt.plot(arc_length, inventories, label="P = {:.1e}".format(P), color=colormap((P - min(Ps))/max(Ps)))
-    # plt.plot(arc_length, inventories_ions, linestyle="--", color=line.get_color())
-    # plt.plot(arc_length, inventories_atoms, linestyle="-.", color=line.get_color())
-
-    # plt.fill_between(
-    #     arc_length, 10**(2*sigmas + np.log10(inventories)), 10**(-2*sigmas + np.log10(inventories)),
-    #     facecolor=line.get_color(), alpha=0.3)
+    line, = plt.plot(arc_length, inventories_ions/inventories, color=colours[i])
 
     inner_sp_loc_index = np.where(np.abs(arc_length-0.20) < 0.005)[0][0]
     outer_sp_loc_index = np.where(np.abs(arc_length-0.36) < 0.005)[0][0]
@@ -69,26 +86,67 @@ for P in Ps:
     inventory_strike_point_outer.append(inventories[outer_sp_loc_index])
     inventory_private_zone.append(inventories[private_zone_sp_loc_index])
 
+    sigma_strike_point_inner.append(sigmas[inner_sp_loc_index])
+    sigma_strike_point_outer.append(sigmas[outer_sp_loc_index])
+    sigma_private_zone.append(sigmas[private_zone_sp_loc_index])
+
     ratio_ions_inner_sp.append(inventories_ions[inner_sp_loc_index]/inventories[inner_sp_loc_index])
     ratio_ions_outer_sp.append(inventories_ions[outer_sp_loc_index]/inventories[outer_sp_loc_index])
     ratio_ions_private_zone.append(inventories_ions[private_zone_sp_loc_index]/inventories[private_zone_sp_loc_index])
 
-
-plt.figure(2)
-plt.yscale("log")
-plt.ylabel("Inventory per unit thickness (H/m)")
-plt.xlabel("Distance along divertor (m)")
-# plt.legend()
-
-plt.figure(1)
+plt.colorbar(sm, label="Puff rate (mol.s$^{-1}$)")
 plt.ylim(0, 1)
 plt.xlabel("Distance along divertor (m)")
 plt.ylabel("Inventory (ions) / Inventory")
+plt.savefig('Figures/WEST/ion_ratio_along_divertor.pdf')
+plt.savefig('Figures/WEST/ion_ratio_along_divertor.svg')
 
-plt.figure(3)
+# #### plot inventory vs puffing rate
+
+res = linregress(Ps, integrated_inventories)
+
+puffin_rate_values = np.linspace(0.3e21, 5e21)
+
+plt.figure(figsize=(6.4, 2.5))
+line, = plt.plot(puffin_rate_values, res.intercept + puffin_rate_values*res.slope, linestyle="--")
+plt.annotate(
+    "{:.2f}".format(res.slope) + r"$\times p + $" + "{:.1e}".format(res.intercept),
+    (3e21, 0.6e21),
+    color=line.get_color())
+plt.scatter(Ps, integrated_inventories, marker="+")
+plt.xlabel("Puff rate (mol.s$^{-1}$)")
+plt.ylabel("Divertor H inventory (H)")
+plt.ylim(bottom=0)
+plt.xlim(left=0)
+plt.tight_layout()
+plt.savefig('Figures/WEST/inventory_vs_puffing_rate.pdf')
+plt.savefig('Figures/WEST/inventory_vs_puffing_rate.svg')
+
+# #### plot inventory at SPs and private zone
+plt.figure(figsize=(6.4, 3))
 line_spi, = plt.plot(Ps, inventory_strike_point_inner, marker="+", color="tab:blue")
 line_spo, = plt.plot(Ps, inventory_strike_point_outer, marker="+", color="tab:blue")
 line_pz,  = plt.plot(Ps, inventory_private_zone, marker="+", color="tab:orange")
+
+sigma_strike_point_inner = np.array(sigma_strike_point_inner)
+sigma_strike_point_outer = np.array(sigma_strike_point_outer)
+sigma_private_zone = np.array(sigma_private_zone)
+
+plt.fill_between(
+    Ps,
+    10**(2*sigma_strike_point_inner + np.log10(inventory_strike_point_inner)),
+    10**(-2*sigma_strike_point_inner + np.log10(inventory_strike_point_inner)),
+    facecolor=line_spi.get_color(), alpha=0.3)
+plt.fill_between(
+    Ps,
+    10**(2*sigma_strike_point_outer + np.log10(inventory_strike_point_outer)),
+    10**(-2*sigma_strike_point_outer + np.log10(inventory_strike_point_outer)),
+    facecolor=line_spo.get_color(), alpha=0.3)
+plt.fill_between(
+    Ps,
+    10**(2*sigma_private_zone + np.log10(inventory_private_zone)),
+    10**(-2*sigma_private_zone + np.log10(inventory_private_zone)),
+    facecolor=line_pz.get_color(), alpha=0.3)
 
 plt.annotate("Inner strike point", (1.05*Ps[-1], inventory_strike_point_inner[-1]), color=line_spi.get_color())
 plt.annotate("Outer strike point", (1.05*Ps[-1], inventory_strike_point_outer[-1]), color=line_spo.get_color())
@@ -97,9 +155,12 @@ plt.xlim(right=1.4*Ps[-1])
 plt.xlabel("Puff rate (mol.s$^{-1}$)")
 plt.ylabel("Inventory (H/m)")
 plt.ylim(bottom=0)
+plt.xlim(left=0)
+plt.tight_layout()
+plt.savefig('Figures/WEST/inventory_at_sp_and_private_zone.pdf')
+plt.savefig('Figures/WEST/inventory_at_sp_and_private_zone.svg')
 
-
-# plot repartition ions/atoms
+# #### plot ions vs atoms
 fig, axs = plt.subplots(1, 3, sharey="row", sharex=True, figsize=(7, 3))
 line_spi, = axs[0].plot(Ps, ratio_ions_inner_sp, marker="+", color="tab:blue")
 axs[0].fill_between(
@@ -128,9 +189,9 @@ axs[2].fill_between(
 # plt.annotate("Inner strike point", (1.05*Ps[-1], ratio_ions_inner_sp[-1]), color=line_spi.get_color())
 # plt.annotate("Outer strike point", (1.05*Ps[-1], ratio_ions_outer_sp[-1]), color=line_spo.get_color())
 # plt.annotate("Private zone", (1.05*Ps[-1], ratio_ions_private_zone[-1]), color=line_pz.get_color())
-axs[0].set_title("ISP")
-axs[1].set_title("OSP")
-axs[2].set_title("Private zone")
+axs[0].set_title("ISP", color=line_spi.get_color())
+axs[1].set_title("OSP", color=line_spo.get_color())
+axs[2].set_title("Private zone", color=line_pz.get_color())
 
 axs[0].annotate("Ions", (3e21, 0.7), color="white", weight="bold")
 axs[0].annotate("Atoms", (3.4e21, 0.9), color="white", weight="bold")
@@ -142,12 +203,15 @@ axs[2].annotate("Atoms", (1e21, 0.7), color="white", weight="bold")
 
 plt.sca(axs[0])
 plt.xlim(left=Ps[0], right=Ps[-1])
-axs[0].set_xlabel("Puff rate \n (mol.s$^{-1}$)")
-axs[1].set_xlabel("Puff rate \n (mol.s$^{-1}$)")
-axs[2].set_xlabel("Puff rate \n (mol.s$^{-1}$)")
+axs[0].set_xlabel("Puff rate (mol.s$^{-1}$)")
+axs[1].set_xlabel("Puff rate (mol.s$^{-1}$)")
+axs[2].set_xlabel("Puff rate (mol.s$^{-1}$)")
 plt.ylabel("Inv (ions) / Inv")
 plt.ylim(bottom=0, top=1)
 plt.yticks(ticks=[0, 0.5, 1])
 # plt.xticks(ticks=[Ps[0], 2e21, Ps[-1]])
 plt.tight_layout()
+plt.savefig('Figures/WEST/ion_ratio_at_sp_and_private_zone.pdf')
+plt.savefig('Figures/WEST/ion_ratio_at_sp_and_private_zone.svg')
+
 plt.show()

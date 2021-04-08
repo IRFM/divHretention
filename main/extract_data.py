@@ -37,18 +37,18 @@ def extract_WEST_data(filename):
 def extract_ITER_data(filename):
     arc_length_0 = 0.6  # this is the assumed beggining of the target
 
-    data = np.genfromtxt(filename, delimiter="\t", names=True, skip_header=18)
+    data = np.genfromtxt(filename, delimiter=",", names=True)
     R_div, Z_div = [], []
     arc_length_div = data["x"]
     E_ion_div = 3*data["Te"] + 2*data["Ti"]
 
-    E_atom_div = 3*data["Te"] + 2*data["Ti"]  # E atom not given
+    E_atom_div = data["D_temp_atm"]
     angles_ions = np.ones(arc_length_div.shape)*60  # angles not given
     angles_atoms = np.ones(arc_length_div.shape)*45
 
     e = 1.6e-19  # C
-    ion_flux_div = data["Wpart"]/e/(E_atom_div + 13.6)
-    atom_flux_div = np.zeros(arc_length_div.shape)
+    ion_flux_div = data["D_flux_ion"]
+    atom_flux_div = data["D_flux_atm"]
     net_heat_flux_div = data["Wtot"]
 
     # remove NaN in angles
