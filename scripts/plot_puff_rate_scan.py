@@ -74,10 +74,8 @@ for i, filename in enumerate(filenames):
         ion_flux, atom_flux, full_export=True)
     inventories, sigmas = compute_inventory(T, c_max, time=time)
     integrated_inventories.append(np.trapz(inventories, arc_length))
-    inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions, time=time)
-    inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms, time=time)
 
-    line, = plt.plot(arc_length, inventories_ions/inventories, color=colours[i])
+    line, = plt.plot(arc_length, c_max_ions/c_max, color=colours[i])
 
     inner_sp_loc_index = np.where(np.abs(arc_length-0.20) < 0.005)[0][0]
     outer_sp_loc_index = np.where(np.abs(arc_length-0.36) < 0.005)[0][0]
@@ -91,14 +89,14 @@ for i, filename in enumerate(filenames):
     sigma_strike_point_outer.append(sigmas[outer_sp_loc_index])
     sigma_private_zone.append(sigmas[private_zone_sp_loc_index])
 
-    ratio_ions_inner_sp.append(inventories_ions[inner_sp_loc_index]/inventories[inner_sp_loc_index])
-    ratio_ions_outer_sp.append(inventories_ions[outer_sp_loc_index]/inventories[outer_sp_loc_index])
-    ratio_ions_private_zone.append(inventories_ions[private_zone_sp_loc_index]/inventories[private_zone_sp_loc_index])
+    ratio_ions_inner_sp.append(c_max_ions[inner_sp_loc_index]/c_max[inner_sp_loc_index])
+    ratio_ions_outer_sp.append(c_max_ions[outer_sp_loc_index]/c_max[outer_sp_loc_index])
+    ratio_ions_private_zone.append(c_max_ions[private_zone_sp_loc_index]/c_max[private_zone_sp_loc_index])
 
 plt.colorbar(sm, label="Puff rate (mol.s$^{-1}$)")
 plt.ylim(0, 1)
 plt.xlabel("Distance along divertor (m)")
-plt.ylabel("Inventory (ions) / Inventory")
+plt.ylabel("c surface (ions) / c surface")
 plt.savefig('Figures/WEST/ion_ratio_along_divertor.pdf')
 plt.savefig('Figures/WEST/ion_ratio_along_divertor.svg')
 
@@ -187,27 +185,24 @@ axs[2].fill_between(
     Ps, np.zeros(len(Ps)) + 1, ratio_ions_private_zone,
     facecolor='tab:orange', alpha=0.3)
 
-# plt.annotate("Inner strike point", (1.05*Ps[-1], ratio_ions_inner_sp[-1]), color=line_spi.get_color())
-# plt.annotate("Outer strike point", (1.05*Ps[-1], ratio_ions_outer_sp[-1]), color=line_spo.get_color())
-# plt.annotate("Private zone", (1.05*Ps[-1], ratio_ions_private_zone[-1]), color=line_pz.get_color())
 axs[0].set_title("ISP", color=line_spi.get_color())
 axs[1].set_title("OSP", color=line_spo.get_color())
 axs[2].set_title("Private zone", color=line_pz.get_color())
 
-axs[0].annotate("Ions", (3e21, 0.7), color="white", weight="bold")
-axs[0].annotate("Atoms", (3.4e21, 0.9), color="white", weight="bold")
-axs[1].annotate("Ions", (3e21, 0.6), color="white", weight="bold")
-axs[1].annotate("Atoms", (3.4e21, 0.9), color="white", weight="bold")
+axs[0].annotate("Ions", (3e21, 0.5), color="white", weight="bold")
+axs[0].annotate("Atoms", (3.4e21, 0.6), color="white", weight="bold")
+axs[1].annotate("Ions", (3e21, 0.4), color="white", weight="bold")
+axs[1].annotate("Atoms", (3.4e21, 0.5), color="white", weight="bold")
 
-axs[2].annotate("Ions", (0.5e21, 0.1), color="white", weight="bold")
-axs[2].annotate("Atoms", (1e21, 0.7), color="white", weight="bold")
+# axs[2].annotate("Ions", (0.5e21, 0.1), color="white", weight="bold")
+axs[2].annotate("Atoms", (1e21, 0.5), color="white", weight="bold")
 
 plt.sca(axs[0])
 plt.xlim(left=Ps[0], right=Ps[-1])
 axs[0].set_xlabel("Puff rate (mol.s$^{-1}$)")
 axs[1].set_xlabel("Puff rate (mol.s$^{-1}$)")
 axs[2].set_xlabel("Puff rate (mol.s$^{-1}$)")
-plt.ylabel("Inv (ions) / Inv")
+plt.ylabel(r"$c_{\mathrm{surface}, \mathrm{ions}} / c_\mathrm{surface}$")
 plt.ylim(bottom=0, top=1)
 plt.yticks(ticks=[0, 0.5, 1])
 # plt.xticks(ticks=[Ps[0], 2e21, Ps[-1]])

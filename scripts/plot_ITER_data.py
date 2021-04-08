@@ -13,8 +13,8 @@ from main import plot_Tc_map_with_subplots, plot_along_divertor, extract_data, c
 import main
 from scipy.interpolate import interp1d
 
-# plt.rc('text', usetex=True)
-# plt.rc('font', family='serif', size=12)
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif', size=12)
 
 numbers = [
     2404,
@@ -214,17 +214,10 @@ for i, results in enumerate([filenames_inner, filenames_outer]):
         c_max, c_max_ions, c_max_atoms = compute_c_max(
             T, E_ion, E_atom, angles_ion, angles_atom,
             ion_flux, atom_flux, full_export=True)
-        inventories, sigmas = compute_inventory(T, c_max, time=time)
-
-        inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions, time=time)
-        inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms, time=time)
-
-        # plt.figure(i)
-        # line, = plt.plot(arc_length, inventories_ions/inventories)
 
         inner_sp_loc_index = np.where(res.temperature == res.temperature.max())[0][0]
 
-        ratios[i].append(inventories_ions[inner_sp_loc_index]/inventories[inner_sp_loc_index])
+        ratios[i].append(c_max_ions[inner_sp_loc_index]/c_max[inner_sp_loc_index])
 
 fig, axs = plt.subplots(1, 2, sharey="row", sharex=True, figsize=(5.5, 3))
 
@@ -249,8 +242,8 @@ axs[1].fill_between(
 axs[0].set_title("ISP")
 axs[1].set_title("OSP")
 
-axs[0].annotate("Ions", (3, 0.4), color="white", weight="bold")
-axs[0].annotate("Atoms", (3.4, 0.6), color="white", weight="bold")
+axs[0].annotate("Ions", (3, 0.3), color="white", weight="bold")
+axs[0].annotate("Atoms", (3.4, 0.5), color="white", weight="bold")
 axs[1].annotate("Ions", (3.4, 0.55), color="white", weight="bold")
 axs[1].annotate("Atoms", (5, 0.7), color="white", weight="bold")
 
@@ -259,7 +252,7 @@ plt.sca(axs[0])
 plt.xlim(left=divertor_pressure[0], right=divertor_pressure[-1])
 axs[0].set_xlabel("Divertor neutral pressure (Pa)")
 axs[1].set_xlabel("Divertor neutral pressure (Pa)")
-plt.ylabel("Inv (ions) / Inv")
+plt.ylabel(r"$c_{\mathrm{surface}, \mathrm{ions}} / c_\mathrm{surface}$")
 plt.ylim(bottom=0, top=1)
 plt.yticks(ticks=[0, 0.5, 1])
 plt.tight_layout()

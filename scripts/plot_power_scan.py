@@ -158,18 +158,14 @@ for filename in filenames:
     c_max, c_max_ions, c_max_atoms = compute_c_max(
         T, E_ion, E_atom, angles_ion, angles_atom,
         ion_flux, atom_flux, full_export=True)
-    inventories, sigmas = compute_inventory(T, c_max, time=time)
-
-    inventories_ions, sigmas_ions = compute_inventory(T, c_max_ions, time=time)
-    inventories_atoms, sigmas_atoms = compute_inventory(T, c_max_atoms, time=time)
 
     inner_sp_loc_index = np.where(np.abs(res.arc_length-0.20) < 0.005)[0][0]
     outer_sp_loc_index = np.where(np.abs(res.arc_length-0.36) < 0.005)[0][0]
     private_zone_sp_loc_index = np.where(np.abs(res.arc_length-0.28) < 0.005)[0][0]
 
-    ratio_ions_inner_sp.append(inventories_ions[inner_sp_loc_index]/inventories[inner_sp_loc_index])
-    ratio_ions_outer_sp.append(inventories_ions[outer_sp_loc_index]/inventories[outer_sp_loc_index])
-    ratio_ions_private_zone.append(inventories_ions[private_zone_sp_loc_index]/inventories[private_zone_sp_loc_index])
+    ratio_ions_inner_sp.append(c_max_ions[inner_sp_loc_index]/c_max[inner_sp_loc_index])
+    ratio_ions_outer_sp.append(c_max_ions[outer_sp_loc_index]/c_max[outer_sp_loc_index])
+    ratio_ions_private_zone.append(c_max_ions[private_zone_sp_loc_index]/c_max[private_zone_sp_loc_index])
 
 fig, axs = plt.subplots(1, 3, sharey=True, sharex=True, figsize=(7, 3))
 
@@ -180,8 +176,8 @@ axs[0].fill_between(
 axs[0].fill_between(
     input_powers, np.zeros(len(input_powers)) + 1, ratio_ions_inner_sp,
     facecolor='tab:orange', alpha=0.3)
-axs[0].annotate("Atoms", (0.5, 0.92), color="white", weight="bold")
-axs[0].annotate("Ions", (0.6, 0.7), color="white", weight="bold")
+axs[0].annotate("Atoms", (0.5, 0.8), color="white", weight="bold")
+axs[0].annotate("Ions", (0.6, 0.55), color="white", weight="bold")
 
 line_spo, = axs[1].plot(input_powers, ratio_ions_outer_sp, marker="+", color="tab:blue")
 axs[1].fill_between(
@@ -190,8 +186,8 @@ axs[1].fill_between(
 axs[1].fill_between(
     input_powers, np.zeros(len(input_powers)) + 1, ratio_ions_outer_sp,
     facecolor='tab:orange', alpha=0.3)
-axs[1].annotate("Atoms", (0.5, 0.92), color="white", weight="bold")
-axs[1].annotate("Ions", (0.6, 0.7), color="white", weight="bold")
+axs[1].annotate("Atoms", (0.5, 0.8), color="white", weight="bold")
+axs[1].annotate("Ions", (0.6, 0.5), color="white", weight="bold")
 
 
 line_pz, = axs[2].plot(input_powers, ratio_ions_private_zone, marker="+", color="tab:orange")
@@ -201,7 +197,7 @@ axs[2].fill_between(
 axs[2].fill_between(
     input_powers, np.zeros(len(input_powers)) + 1, ratio_ions_private_zone,
     facecolor='tab:orange', alpha=0.3)
-axs[2].annotate("Ions", (0.5, 0.1), color="white", weight="bold")
+# axs[2].annotate("Ions", (0.5, 0.1), color="white", weight="bold")
 axs[2].annotate("Atoms", (0.5, 0.3), color="white", weight="bold")
 
 axs[0].set_title("ISP", color=line_spi.get_color())
@@ -212,7 +208,7 @@ axs[2].set_title("Private zone", color=line_pz.get_color())
 axs[0].set_xlabel("Input power (MW)")
 axs[1].set_xlabel("Input power (MW)")
 axs[2].set_xlabel("Input power (MW)")
-axs[0].set_ylabel("Inv (ions) / Inv")
+axs[0].set_ylabel(r"$c_{\mathrm{surface}, \mathrm{ions}} / c_\mathrm{surface}$")
 
 plt.xlim(left=input_powers[0], right=input_powers[-1])
 plt.ylim(bottom=0, top=1)

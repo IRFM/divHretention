@@ -7,7 +7,7 @@ from scipy.stats import linregress
 
 from main import process_file
 
-times = np.logspace(5, 7, num=5)
+times = np.logspace(4, 7, num=5)
 # fig, axs = plt.subplots(1, 2, sharey=True, figsize=(8, 3))
 plt.figure()
 folder = "data/exposure_conditions_divertor/ITER/Greg/"
