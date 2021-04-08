@@ -74,14 +74,17 @@ def compute_inventory(T, c_max, time):
 
 def compute_c_max(
         T, E_ion, E_atom, angles_ion, angles_atom,
-        ion_flux, atom_flux, full_export=False):
+        ion_flux, atom_flux, full_export=False, isotope="H"):
     # Diffusion coefficient Fernandez et al Acta Materialia (2015)
     # https://doi.org/10.1016/j.actamat.2015.04.052
     D_0_W = 1.9e-7
     E_D_W = 0.2
-    k_B = 8.6e-5
+    k_B = 8.617e-5
     D = D_0_W*np.exp(-E_D_W/k_B/T)
-
+    if isotope == "D":
+        D *= 1/2**0.5
+    elif isotope == "T":
+        D *= 1/3**0.5
     # implantation ranges
     implantation_range_ions = [
         float(implantation_range(energy, angle))
