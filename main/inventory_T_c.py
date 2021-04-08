@@ -1,6 +1,6 @@
 import numpy as np
 import scipy as sp
-from scipy.interpolate import griddata, interp2d, interp1d
+from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 from matplotlib import ticker
 from .process_T_c_data import points, data
