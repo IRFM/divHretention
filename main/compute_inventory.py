@@ -1,17 +1,27 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.interpolate import interp2d
 
 from . import implantation_range, reflection_coeff
 from . import extract_data
 from . import estimate_inventory_with_gp_regression
 
 DEFAULT_TIME = 1e7
-inv, sig, points_x, points_y, sim_points = \
-    estimate_inventory_with_gp_regression(time=DEFAULT_TIME)
 
-inv_T_c = interp2d(points_x, points_y, inv, kind='cubic')
-sig_inv = interp2d(points_x, points_y, sig, kind='cubic')
+GP = estimate_inventory_with_gp_regression(time=DEFAULT_TIME)
+
+
+def inv_T_c(T, c):
+    if c == 0:
+        return 0
+    else:
+        return 10**GP((T, np.log10(c)))[0][0]
+
+
+def sig_inv(T, c):
+    if c == 0:
+        return 0
+    else:
+        return GP((T, np.log10(c)))[1][0]
 
 database_inv_sig = {
     DEFAULT_TIME: {
@@ -31,7 +41,7 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
 
     # Compute the surface H concentration
     c_max = compute_c_max(T, E_ion_div, E_atom_div, angles_ions,
-                          angles_atoms, ion_flux_div, atom_flux_div, filename)
+                          angles_atoms, ion_flux_div, atom_flux_div)
 
     if inventory:
         # compute inventory as a function of temperature and concentration
@@ -55,13 +65,20 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
 def compute_inventory(T, c_max, time):
 
     if time not in database_inv_sig.keys():  # if time is not the default value
-        inv_local, sig_local, points_x_local, points_y_local, sim_points_local = \
-            estimate_inventory_with_gp_regression(time=time)
+        GP = estimate_inventory_with_gp_regression(time=time)
 
-        inv_T_c_local = interp2d(
-            points_x_local, points_y_local, inv_local, kind='cubic')
-        sig_inv_local = interp2d(
-            points_x_local, points_y_local, sig_local, kind='cubic')
+        def inv_T_c_local(T, c):
+            if c == 0:
+                return 0
+            else:
+                return 10**GP((T, np.log10(c)))[0][0]
+
+        def sig_inv_local(T, c):
+            if c == 0:
+                return 0
+            else:
+                return GP((T, np.log10(c)))[1][0]
+
         database_inv_sig[time] = {
             "inv": inv_T_c_local,
             "sig": sig_inv_local
@@ -71,9 +88,6 @@ def compute_inventory(T, c_max, time):
         sig_inv_local = database_inv_sig[time]["sig"]
     # compute inventory (H/m) along divertor
     e = 12e-3  # monoblock thickness (m)
-    inventories = []  # inventory in H/m
-    for temperature, concentration in zip(T, c_max):
-        inventories.append(float(inv_T_c_local(temperature, concentration))/e)
     inventories = [
         float(inv_T_c_local(T_, c)) for T_, c in zip(T, c_max)]
     sigmas = [
@@ -85,14 +99,17 @@ def compute_inventory(T, c_max, time):
 
 def compute_c_max(
         T, E_ion, E_atom, angles_ion, angles_atom,
-        ion_flux, atom_flux, filename, full_export=False):
+        ion_flux, atom_flux, full_export=False, isotope="H"):
     # Diffusion coefficient Fernandez et al Acta Materialia (2015)
     # https://doi.org/10.1016/j.actamat.2015.04.052
     D_0_W = 1.9e-7
     E_D_W = 0.2
-    k_B = 8.6e-5
+    k_B = 8.617e-5
     D = D_0_W*np.exp(-E_D_W/k_B/T)
-
+    if isotope == "D":
+        D *= 1/2**0.5
+    elif isotope == "T":
+        D *= 1/3**0.5
     # implantation ranges
     implantation_range_ions = [
         float(implantation_range(energy, angle))
