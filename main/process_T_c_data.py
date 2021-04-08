@@ -83,8 +83,9 @@ for s in strings:
                         float(row[-3])))
         a, b = fit_powerlaw(t, inventory)
         t_ = np.logspace(5, 7, num=100)
-        data[-1]["t"] = t_
-        data[-1]["inventory"] = a*t_**b
+        inventory_ = a*t_**b
+        data[-1]["t"] = t + t_.tolist()
+        data[-1]["inventory"] = inventory + inventory_.tolist()
 
 T_ = 320
 for c in [*np.logspace(22 + np.log10(2), 23, num=7), *np.logspace(21 + np.log10(2), 22, num=7), *np.logspace(20 + np.log10(2), 21, num=7)]:
@@ -93,7 +94,7 @@ for c in [*np.logspace(22 + np.log10(2), 23, num=7), *np.logspace(21 + np.log10(
     data.append({})
     data[-1]["T"] = T_
     data[-1]["c"] = c
-    t = np.logspace(5, 7, num=100)
+    t = np.logspace(2, 7, num=100)
     D = 1.326e-10
     n = 6.93e25
     e = (t*2*D*c/n)**0.5
