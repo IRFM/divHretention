@@ -64,7 +64,7 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
 
 def compute_inventory(T, c_max, time):
 
-    if time not in database_inv_sig.keys():  # if time is not the default value
+    if time not in database_inv_sig.keys():  # if time is not in the database
         GP = estimate_inventory_with_gp_regression(time=time)
 
         def inv_T_c_local(T, c):
