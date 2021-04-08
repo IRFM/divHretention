@@ -23,6 +23,13 @@ def sig_inv(T, c):
     else:
         return GP((T, np.log10(c)))[1][0]
 
+database_inv_sig = {
+    DEFAULT_TIME: {
+        "inv": inv_T_c,
+        "sig": sig_inv
+    }
+}
+
 
 def process_file(filename, inventory=True, time=DEFAULT_TIME):
     R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
@@ -57,7 +64,7 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
 
 def compute_inventory(T, c_max, time):
 
-    if time != DEFAULT_TIME:  # if time is not the default value
+    if time not in database_inv_sig.keys():  # if time is not in the database
         GP = estimate_inventory_with_gp_regression(time=time)
 
         def inv_T_c_local(T, c):
@@ -71,9 +78,14 @@ def compute_inventory(T, c_max, time):
                 return 0
             else:
                 return GP((T, np.log10(c)))[1][0]
+
+        database_inv_sig[time] = {
+            "inv": inv_T_c_local,
+            "sig": sig_inv_local
+        }
     else:
-        inv_T_c_local = inv_T_c
-        sig_inv_local = sig_inv
+        inv_T_c_local = database_inv_sig[time]["inv"]
+        sig_inv_local = database_inv_sig[time]["sig"]
     # compute inventory (H/m) along divertor
     e = 12e-3  # monoblock thickness (m)
     inventories = [
