@@ -74,7 +74,7 @@ def compute_inventory(T, c_max, time):
 
 def compute_c_max(
         T, E_ion, E_atom, angles_ion, angles_atom,
-        ion_flux, atom_flux, filename, full_export=False):
+        ion_flux, atom_flux, full_export=False):
     # Diffusion coefficient Fernandez et al Acta Materialia (2015)
     # https://doi.org/10.1016/j.actamat.2015.04.052
     D_0_W = 1.9e-7
