@@ -43,7 +43,7 @@ my_plot = plot_along_divertor(
 
 plt.tight_layout()
 plt.colorbar(
-    sm, label="Puff rate (mol.s$^{-1}$)",
+    sm, label="Puff rate (s$^{-1}$)",
     ax=my_plot.axs)
 plt.savefig('Figures/WEST/inventory_along_divertor.pdf')
 plt.savefig('Figures/WEST/inventory_along_divertor.svg')
@@ -93,7 +93,7 @@ for i, filename in enumerate(filenames):
     ratio_ions_outer_sp.append(c_max_ions[outer_sp_loc_index]/c_max[outer_sp_loc_index])
     ratio_ions_private_zone.append(c_max_ions[private_zone_sp_loc_index]/c_max[private_zone_sp_loc_index])
 
-plt.colorbar(sm, label="Puff rate (mol.s$^{-1}$)")
+plt.colorbar(sm, label="Puff rate (s$^{-1}$)")
 plt.ylim(0, 1)
 plt.xlabel("Distance along divertor (m)")
 plt.ylabel("c surface (ions) / c surface")
@@ -113,7 +113,7 @@ plt.annotate(
     (3e21, 0.6e21),
     color=line.get_color())
 plt.scatter(Ps, integrated_inventories, marker="+")
-plt.xlabel("Puff rate (mol.s$^{-1}$)")
+plt.xlabel("Puff rate (s$^{-1}$)")
 plt.ylabel("Divertor H inventory (H)")
 plt.ylim(bottom=0)
 plt.xlim(left=0)
@@ -151,7 +151,7 @@ plt.annotate("Inner strike point", (1.05*Ps[-1], inventory_strike_point_inner[-1
 plt.annotate("Outer strike point", (1.05*Ps[-1], inventory_strike_point_outer[-1]), color=line_spo.get_color())
 plt.annotate("Private zone", (1.05*Ps[-1], inventory_private_zone[-1]), color=line_pz.get_color())
 plt.xlim(right=1.4*Ps[-1])
-plt.xlabel("Puff rate (mol.s$^{-1}$)")
+plt.xlabel("Puff rate (s$^{-1}$)")
 plt.ylabel("Inventory (H/m)")
 plt.ylim(bottom=0)
 plt.xlim(left=0)
@@ -199,9 +199,9 @@ axs[2].annotate("Atoms", (1e21, 0.5), color="white", weight="bold")
 
 plt.sca(axs[0])
 plt.xlim(left=Ps[0], right=Ps[-1])
-axs[0].set_xlabel("Puff rate (mol.s$^{-1}$)")
-axs[1].set_xlabel("Puff rate (mol.s$^{-1}$)")
-axs[2].set_xlabel("Puff rate (mol.s$^{-1}$)")
+axs[0].set_xlabel("Puff rate (s$^{-1}$)")
+axs[1].set_xlabel("Puff rate (s$^{-1}$)")
+axs[2].set_xlabel("Puff rate (s$^{-1}$)")
 plt.ylabel(r"$c_{\mathrm{surface}, \mathrm{ions}} / c_\mathrm{surface}$")
 plt.ylim(bottom=0, top=1)
 plt.yticks(ticks=[0, 0.5, 1])
