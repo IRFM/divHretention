@@ -54,10 +54,10 @@ sm = plt.cm.ScalarMappable(cmap=colormap, norm=Normalize(vmin=min(divertor_press
 colours = [colormap((P - min(divertor_pressure))/max(divertor_pressure)) for P in divertor_pressure]
 
 filenames_inner = [
-    "data/exposure_conditions_divertor/ITER/Greg/{}/{}_inner_target.csv".format(number, number) for number in numbers
+    "data/exposure_conditions_divertor/ITER/{}/{}_inner_target.csv".format(number, number) for number in numbers
     ]
 filenames_outer = [
-    "data/exposure_conditions_divertor/ITER/Greg/{}/{}_outer_target.csv".format(number, number) for number in numbers
+    "data/exposure_conditions_divertor/ITER/{}/{}_outer_target.csv".format(number, number) for number in numbers
     ]
 
 res_inner, res_outer = [], []
