@@ -10,7 +10,7 @@ from main import process_file
 times = np.logspace(4, 7, num=5)
 # fig, axs = plt.subplots(1, 2, sharey=True, figsize=(8, 3))
 plt.figure()
-folder = "data/exposure_conditions_divertor/ITER/Greg/"
+folder = "data/exposure_conditions_divertor/ITER/"
 
 numbers = [
     2404,
@@ -48,10 +48,10 @@ colormap = cm.cividis
 sm = plt.cm.ScalarMappable(cmap=colormap, norm=Normalize(vmin=min(divertor_pressure), vmax=max(divertor_pressure)))
 
 filenames_inner = [
-    "data/exposure_conditions_divertor/ITER/Greg/{}/{}_inner_target.csv".format(number, number) for number in numbers
+    "data/exposure_conditions_divertor/ITER/{}/{}_inner_target.csv".format(number, number) for number in numbers
     ]
 filenames_outer = [
-    "data/exposure_conditions_divertor/ITER/Greg/{}/{}_outer_target.csv".format(number, number) for number in numbers
+    "data/exposure_conditions_divertor/ITER/{}/{}_outer_target.csv".format(number, number) for number in numbers
     ]
 
 
