@@ -13,11 +13,8 @@ import numpy as np
 
 from main import process_file
 filenames = [
-    "data/exposure_conditions_divertor/WEST/Hao/WEST_54903_GP1.0e21_IP0.5MW_wall_data.mat",
-    "data/exposure_conditions_divertor/WEST/Hao/WEST_54903_GP1.0e21_IP0.449MW_wall_data.mat",
-    "data/exposure_conditions_divertor/WEST/Hao/WEST_54903_GP1.3e21_IP0.449MW_wall_data.mat",
-    "data/exposure_conditions_divertor/WEST/Hao/WEST_54903_GP3.6e21_IP2.5MW_wall_data.mat",
-    "data/exposure_conditions_divertor/WEST/Julien/WPN54696-1.5MW-FESTIM_inputs.csv"
+    "data/exposure_conditions_divertor/WEST/West-LSN-P1.6e+21-IP0.449MW.csv",
+    "data/exposure_conditions_divertor/WEST/West-LSN-P2.5e+21-IP1.500MW.csv",
 ]
 
 for i, filename in enumerate(filenames):
