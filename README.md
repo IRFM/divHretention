@@ -1,4 +1,4 @@
-# FESTIM-SOLEDGE3X coupling project
+# divHretention
 
 # Get started
 ```
