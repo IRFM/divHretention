@@ -14,7 +14,7 @@ from scipy.stats import linregress
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=12)
 
-folder = "data/exposure_conditions_divertor/WEST/Hao/"
+folder = "data/exposure_conditions_divertor/WEST/"
 input_powers = [
     0.449,
     1,
