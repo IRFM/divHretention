@@ -30,7 +30,7 @@ colormap = cm.viridis
 sm = plt.cm.ScalarMappable(cmap=colormap, norm=Normalize(vmin=min(Ps), vmax=max(Ps)))
 colours = [colormap((P - min(Ps))/max(Ps)) for P in Ps]
 
-filenames = ["data/exposure_conditions_divertor/WEST/Hao/West-LSN-P{:.1e}-IP{:.3}MW.csv".format(P, input_power) for P in Ps]
+filenames = ["data/exposure_conditions_divertor/WEST/West-LSN-P{:.1e}-IP{:.3}MW.csv".format(P, input_power) for P in Ps]
 
 time = 1e7  # s
 # #### plot inventory along divertor

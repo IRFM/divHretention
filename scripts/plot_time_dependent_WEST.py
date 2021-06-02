@@ -9,7 +9,7 @@ from main import process_file
 
 times = np.logspace(5, 7, num=5)
 fig, axs = plt.subplots(1, 2, sharey=True, figsize=(8, 3))
-folder = "data/exposure_conditions_divertor/WEST/Hao/"
+folder = "data/exposure_conditions_divertor/WEST/"
 # puffing rate scan
 plt.sca(axs[0])
 input_power = 0.449

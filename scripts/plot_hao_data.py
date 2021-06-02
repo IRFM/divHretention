@@ -9,7 +9,7 @@ from main import plot_Tc_map_with_subplots
 
 
 filenames = []
-folder = "data/exposure_conditions_divertor/WEST/Hao/"
+folder = "data/exposure_conditions_divertor/WEST/"
 for f in os.listdir(folder):
     filenames.append(folder + str(f))
 
