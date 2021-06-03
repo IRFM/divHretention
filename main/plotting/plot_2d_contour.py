@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 
-from main import inv_T_c, process_file
+from main import inv_T_c, process_file, DEFAULT_TIME, database_inv_sig
 
 
 class plot_Tc_map_with_subplots():
@@ -98,7 +98,7 @@ def create_2d_inv_array(XX, YY):
     min_value, max_value = np.float("inf"), np.float("-inf")
     for i in range(len(XX)):
         for j in range(len(XX[i])):
-            val = inv_T_c(XX[i][j], YY[i][j])
+            val = database_inv_sig[DEFAULT_TIME]["inv"](XX[i][j], YY[i][j])
             values[i][j] = val
             min_value = min(min_value, float(val))
             max_value = max(max_value, float(val))
