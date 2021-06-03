@@ -152,18 +152,16 @@ class plot_along_divertor():
 
 
 def create_correspondance_dict(filename):
-    R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
-        atom_flux_div, net_heat_flux_div, angles_ions, \
-        angles_atoms, data = extract_data(filename)
+    my_exposition = extract_data.Exposition(filename)
     res = process_file(filename)
     correspondance_dict["arc_length"]["var"] = res.arc_length
-    correspondance_dict["ion_energy"]["var"] = E_ion_div
-    correspondance_dict["atom_energy"]["var"] = E_atom_div
-    correspondance_dict["ion_flux"]["var"] = ion_flux_div
-    correspondance_dict["atom_flux"]["var"] = atom_flux_div
-    correspondance_dict["heat_flux"]["var"] = net_heat_flux_div
-    correspondance_dict["ion_angle"]["var"] = angles_ions
-    correspondance_dict["atom_angle"]["var"] = angles_atoms
+    correspondance_dict["ion_energy"]["var"] = my_exposition.E_ion
+    correspondance_dict["atom_energy"]["var"] = my_exposition.E_atom
+    correspondance_dict["ion_flux"]["var"] = my_exposition.ion_flux
+    correspondance_dict["atom_flux"]["var"] = my_exposition.atom_flux
+    correspondance_dict["heat_flux"]["var"] = my_exposition.net_heat_flux
+    correspondance_dict["ion_angle"]["var"] = my_exposition.angles_ions
+    correspondance_dict["atom_angle"]["var"] = my_exposition.angles_atoms
     correspondance_dict["T_surf"]["var"] = res.temperature
     correspondance_dict["c_surf"]["var"] = res.concentration
     correspondance_dict["inventory"]["var"] = res.inventory

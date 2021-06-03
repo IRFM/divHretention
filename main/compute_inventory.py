@@ -26,16 +26,23 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
         Output(): object with attributes "arc_length", "temperature",
             "concentration", "inventory", "sigma_inv"
     """
-    R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
-        atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
-        extract_data(filename)
+    # arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
+    #     atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
+    #     extract_data(filename)
+    my_exposition = extract_data.Exposition(filename)
     # Surface temperature from Delaporte-Mathurin et al, SREP 2020
     # https://www.nature.com/articles/s41598-020-74844-w
-    T = 1.1e-4*net_heat_flux_div + 323
+    T = 1.1e-4*my_exposition.net_heat_flux + 323
 
     # Compute the surface H concentration
-    c_max = compute_c_max(T, E_ion_div, E_atom_div, angles_ions,
-                          angles_atoms, ion_flux_div, atom_flux_div)
+    c_max = compute_c_max(
+        T,
+        my_exposition.E_ion,
+        my_exposition.E_atom,
+        my_exposition.angles_ions,
+        my_exposition.angles_atoms,
+        my_exposition.ion_flux,
+        my_exposition.atom_flux)
 
     if inventory:
         # compute inventory as a function of temperature and concentration
@@ -46,7 +53,7 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
         pass
 
     output = Output()
-    output.arc_length = arc_length_div
+    output.arc_length = my_exposition.arc_length
     output.temperature = T
     output.concentration = c_max
     if inventory:
