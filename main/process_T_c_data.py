@@ -5,6 +5,7 @@ from os import path
 import numpy as np
 import csv
 from scipy.stats import linregress
+from main import folder_mb_data
 
 
 def fit_powerlaw(x, y):
@@ -20,7 +21,7 @@ data = []
 
 # extract high temp data
 strings = []
-folder = "data/monoblock_data/Solution_instantaneous_recomb_rand"
+folder = folder_mb_data + "/monoblock_data/Solution_instantaneous_recomb_rand"
 for f in os.listdir(folder):
     strings.append(os.path.join("/" + folder, f))
 
@@ -34,7 +35,6 @@ for s in strings:
     data[-1]["T"] = points[-1][0]
     data[-1]["c"] = points[-1][1]
     filename = folder + "/T={:.2e};c={:.2e}/derived_quantities.csv".format(points[-1][0], points[-1][1])
-
     t = []
     inventory = []
     with open(filename, 'r') as csvfile:
@@ -57,7 +57,7 @@ for s in strings:
 # extract low temp data
 L = 30e-3
 strings = []
-folder = "data/monoblock_data/Solution_instantaneous_recomb_low_temp"
+folder = folder_mb_data + "/monoblock_data/Solution_instantaneous_recomb_low_temp"
 for f in os.listdir(folder):
     strings.append(os.path.join("/" + folder, f))
 

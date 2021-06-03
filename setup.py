@@ -22,4 +22,5 @@ setuptools.setup(
         'matplotlib',
     ],
     zip_safe=True,
+    include_package_data=True,
 )
