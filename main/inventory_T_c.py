@@ -18,6 +18,16 @@ def inv(points, time=1e7):
 
 
 def estimate_inventory_with_gp_regression(time=1e7):
+    """Estimate the monoblock inventory in H/m based on FESTIM results at a
+    given time. The regression is made on T, log(c_surface), log(inventory)
+
+    Args:
+        time (float, optional): Exposure time in seconds. Defaults to 1e7.
+
+    Returns:
+        GpRegressor: callable, usage GP(600, np.log10(1e20)) see
+            https://inference-tools.readthedocs.io/en/stable/GpRegressor.html
+    """
     # with inference-tools
     sim_points = []
     z = []
