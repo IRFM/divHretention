@@ -11,6 +11,21 @@ database_inv_sig = {}
 
 
 def process_file(filename, inventory=True, time=DEFAULT_TIME):
+    """Computes an output given a filename
+
+    Args:
+        filename (str): CSV file path. See extract_data() for information on
+            the formatting.
+        inventory (bool, optional): If True, the inventories and standard
+            deviation will be computed and stored in the output. Defaults to
+            True.
+        time (float, optional): Time in seconds at which the inventory is
+            computed. Defaults to 1e7.
+
+    Returns:
+        Output(): object with attributes "arc_length", "temperature",
+            "concentration", "inventory", "sigma_inv"
+    """
     R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
         atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
         extract_data(filename)
@@ -42,7 +57,20 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
 
 
 def compute_inventory(T, c_max, time):
+    """Computes the monoblock inventory as a function of the surface
+    temperature, surface concentration and exposure time.
+    If the time is not already in database_inv_sig, another gaussian
+    regression is performed.
 
+    Args:
+        T (list): Surface temperature (K)
+        c_max (list): Surface concentration (H m-3)
+        time (float): Exposure time (s)
+
+    Returns:
+        numpy.array, numpy.array: list of inventories, list of standard
+            deviation
+    """
     if time not in database_inv_sig.keys():  # if time is not in the database
         GP = estimate_inventory_with_gp_regression(time=time)
 
@@ -81,6 +109,26 @@ def compute_inventory(T, c_max, time):
 def compute_c_max(
         T, E_ion, E_atom, angles_ion, angles_atom,
         ion_flux, atom_flux, full_export=False, isotope="H"):
+    """Computes the surface concentration based on exposure conditions.
+
+    Args:
+        T (numpy.array): Surface temperature (K)
+        E_ion (numpy.array): Ion incident energy (eV)
+        E_atom (numpy.array): Atom incident energy (eV)
+        angles_ion (numpy.array): Angle of incidence of ions (deg)
+        angles_atom (numpy.array): Angle of incidence of atoms (deg)
+        ion_flux (numpy.array): Ion flux (m-2 s-1)
+        atom_flux (numpy.array): Atom flux (m-2 s-1)
+        full_export (bool, optional): If True, the output will contain the
+            surface concentration due to ions and atoms. Defaults to False.
+        isotope (str, optional): Type of hydrogen isotope amongst "H", "D",
+            "T". Defaults to "H".
+
+    Returns:
+        numpy.array or (numpy.array, numpy.array, numpy.array): surface
+            concentration or (surface concentration, surface conc. ions,
+            surface conc. atoms)
+    """
     # Diffusion coefficient Fernandez et al Acta Materialia (2015)
     # https://doi.org/10.1016/j.actamat.2015.04.052
     D_0_W = 1.9e-7
