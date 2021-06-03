@@ -7,23 +7,7 @@ from . import estimate_inventory_with_gp_regression
 
 DEFAULT_TIME = 1e7
 
-
-def inv_T_c(T, c, GP):
-    if c == 0:
-        return 0
-    else:
-        return 10**GP((T, np.log10(c)))[0][0]
-
-
-def sig_inv(T, c, GP):
-    if c == 0:
-        return 0
-    else:
-        return GP((T, np.log10(c)))[1][0]
-
-
-database_inv_sig = {
-}
+database_inv_sig = {}
 
 
 def process_file(filename, inventory=True, time=DEFAULT_TIME):
@@ -63,10 +47,18 @@ def compute_inventory(T, c_max, time):
         GP = estimate_inventory_with_gp_regression(time=time)
 
         def inv_T_c_local(T, c):
-            return inv_T_c(T, c, GP)
+            if c == 0:
+                val = 0
+            else:
+                val = 10**GP((T, np.log10(c)))[0][0]
+            return val
 
         def sig_inv_local(T, c):
-            return sig_inv(T, c, GP)
+            if c == 0:
+                val = 0
+            else:
+                val = GP((T, np.log10(c)))[1][0]
+            return val
 
         database_inv_sig[time] = {
             "inv": inv_T_c_local,
