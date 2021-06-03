@@ -14,8 +14,8 @@ def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
     """Computes an output given a filename
 
     Args:
-        filename (str): CSV file path. See extract_data() for information on
-            the formatting.
+        filename (str): CSV file path. See extract_data.Exposition for
+            information on the formatting.
         filetype (str): The type of CSV file "ITER" or "WEST".
         inventory (bool, optional): If True, the inventories and standard
             deviation will be computed and stored in the output. Defaults to
@@ -76,7 +76,7 @@ def compute_inventory(T, c_max, time):
         time (float): Exposure time (s)
 
     Returns:
-        numpy.array, numpy.array: list of inventories, list of standard
+        numpy.array, numpy.array: list of inventories (H/m), list of standard
             deviation
     """
     if time not in database_inv_sig.keys():  # if time is not in the database
@@ -104,13 +104,11 @@ def compute_inventory(T, c_max, time):
         inv_T_c_local = database_inv_sig[time]["inv"]
         sig_inv_local = database_inv_sig[time]["sig"]
     # compute inventory (H/m) along divertor
-    e = 12e-3  # monoblock thickness (m)
     inventories = [
         float(inv_T_c_local(T_, c)) for T_, c in zip(T, c_max)]
     sigmas = [
         float(sig_inv_local(T_, c)) for T_, c in zip(T, c_max)]
     inventories, sigmas = np.array(inventories), np.array(sigmas)
-    inventories *= 1/e   # convert in H/m
     return inventories, sigmas
 
 
