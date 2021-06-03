@@ -4,7 +4,16 @@ from scipy.interpolate import interp2d
 from inference.gp_tools import GpRegressor
 from inference.gp_tools import RationalQuadratic, SquaredExponential
 
-data = np.genfromtxt("data/data_TRIM_energy_angle.csv", delimiter=";", names=True)
+try:
+    import importlib.resources as pkg_resources
+except ImportError:
+    # Try backported to PY<37 `importlib_resources`.
+    import importlib_resources as pkg_resources
+
+from . import data  # relative-import the *package* containing the templates
+
+with pkg_resources.path(data, "data_TRIM_energy_angle.csv") as p:
+    data = np.genfromtxt(p, delimiter=";", names=True)
 
 # interpolate reflection coeff
 sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"], data["theta_inc"])]
