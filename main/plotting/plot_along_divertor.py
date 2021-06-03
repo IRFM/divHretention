@@ -58,12 +58,19 @@ correspondance_dict = {
 
 class plot_along_divertor():
     def __init__(
-            self, filenames=[], quantities=["sigma_inv"],
+            self, filenames=[], filetypes=[], quantities=["sigma_inv"],
             figsize=(8, 8), plot_sigma=True, overlap_ions_atoms=True,
             colors=None, **kwargs):
 
         self.count = 0
         self.filenames = []
+
+        if len(filenames) > 0 and len(filetypes) == 0:
+            raise ValueError("Missing filetypes argument")
+        if type(filetypes) is str:
+            self.filetypes = [filetypes for _ in filenames]
+        else:
+            self.filetypes = filetypes[:]
         self.quantities = quantities
         self.plot_sigma = plot_sigma
         self.overlap_ions_atoms = overlap_ions_atoms
@@ -75,8 +82,9 @@ class plot_along_divertor():
         self.axs[-1].set_xlabel("Distance along divertor (m)")
         if colors is None:
             colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-        for filename, color in zip(filenames, colors):
-            self.add_case(filename, color)
+        for filename, filetype, color in \
+                zip(filenames, self.filetypes, colors):
+            self.add_case(filename, filetype, color)
 
     def compute_nrows(self):
 
@@ -107,12 +115,12 @@ class plot_along_divertor():
 
         return N, axs_ids
 
-    def add_case(self, filename, color):
+    def add_case(self, filename, filetype, color):
         self.count += 1
         self.filenames.append(filename)
 
         label = "Case {}".format(self.count)
-        correspondance_dict = create_correspondance_dict(filename)
+        correspondance_dict = create_correspondance_dict(filename, filetype)
         arc_length = correspondance_dict["arc_length"]["var"]
         if self.nrows == 1:
             axs = [self.axs]
@@ -151,19 +159,17 @@ class plot_along_divertor():
         plt.show()
 
 
-def create_correspondance_dict(filename):
-    R_div, Z_div, arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
-        atom_flux_div, net_heat_flux_div, angles_ions, \
-        angles_atoms, data = extract_data(filename)
-    res = process_file(filename)
+def create_correspondance_dict(filename, filetype):
+    my_exposition = extract_data.Exposition(filename, filetype)
+    res = process_file(filename, filetype)
     correspondance_dict["arc_length"]["var"] = res.arc_length
-    correspondance_dict["ion_energy"]["var"] = E_ion_div
-    correspondance_dict["atom_energy"]["var"] = E_atom_div
-    correspondance_dict["ion_flux"]["var"] = ion_flux_div
-    correspondance_dict["atom_flux"]["var"] = atom_flux_div
-    correspondance_dict["heat_flux"]["var"] = net_heat_flux_div
-    correspondance_dict["ion_angle"]["var"] = angles_ions
-    correspondance_dict["atom_angle"]["var"] = angles_atoms
+    correspondance_dict["ion_energy"]["var"] = my_exposition.E_ion
+    correspondance_dict["atom_energy"]["var"] = my_exposition.E_atom
+    correspondance_dict["ion_flux"]["var"] = my_exposition.ion_flux
+    correspondance_dict["atom_flux"]["var"] = my_exposition.atom_flux
+    correspondance_dict["heat_flux"]["var"] = my_exposition.net_heat_flux
+    correspondance_dict["ion_angle"]["var"] = my_exposition.angles_ions
+    correspondance_dict["atom_angle"]["var"] = my_exposition.angles_atoms
     correspondance_dict["T_surf"]["var"] = res.temperature
     correspondance_dict["c_surf"]["var"] = res.concentration
     correspondance_dict["inventory"]["var"] = res.inventory
@@ -173,16 +179,17 @@ def create_correspondance_dict(filename):
 
 
 class plot_T_c_inv_along_divertor(plot_along_divertor):
-    def __init__(self, filenames=[], **kwargs):
+    def __init__(self, filenames=[], filetypes=[], **kwargs):
 
         super().__init__(
             quantities=["T_surf", "c_surf", "inventory"],
             filenames=filenames,
+            filetypes=filetypes,
             **kwargs)
 
 
 class plot_particle_exposure_along_divertor(plot_along_divertor):
-    def __init__(self, filenames=[], **kwargs):
+    def __init__(self, filenames=[], filetypes=[], **kwargs):
         quantities = [
             "atom_flux", "ion_flux",
             "ion_energy", "atom_energy",
@@ -191,4 +198,5 @@ class plot_particle_exposure_along_divertor(plot_along_divertor):
         super().__init__(
             quantities=quantities,
             filenames=filenames,
+            filetypes=filetypes,
             **kwargs)

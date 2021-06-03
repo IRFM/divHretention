@@ -7,7 +7,7 @@ from main import process_file, DEFAULT_TIME, database_inv_sig
 
 class plot_Tc_map_with_subplots():
     def __init__(
-            self, filenames=[], T_bounds=[320, 1200],
+            self, filenames=[], filetypes=[], T_bounds=[320, 1200],
             c_bounds=[1e20, 1e23], figsize=(8, 8), **kwargs):
 
         self.fig, (self.axs_top, self.axs_bottom) = \
@@ -16,12 +16,16 @@ class plot_Tc_map_with_subplots():
                 ncols=2, sharex="col", **kwargs)
         self.count = 0
         self.filenames = filenames[:]
+        if type(filetypes) is str:
+            self.filetypes = [filetypes for _ in filenames]
+        else:
+            self.filetypes = filetypes[:]
         self.T_bounds = T_bounds
         self.c_bounds = c_bounds
 
         self.plot_2d_map()
-        for filename in filenames:
-            self.add_case(filename)
+        for filename, filetype in zip(self.filenames, self.filetypes):
+            self.add_case(filename, filetype)
 
     @property
     def T_bounds(self):
@@ -63,11 +67,11 @@ class plot_Tc_map_with_subplots():
         plt.xlabel(r"$T_\mathrm{surface}$ (K)")#, fontsize=12)
         plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)")#, fontsize=12)
 
-    def add_case(self, filename):
+    def add_case(self, filename, filetype):
         self.count += 1
         self.filenames.append(filename)
         xlabel = "Distance along divertor (m)"
-        res = process_file(filename)
+        res = process_file(filename, filetype)
         plt.sca(self.axs_bottom[0])
         plt.plot(res.temperature, res.concentration, alpha=0.7)
         plt.sca(self.axs_bottom[1])
