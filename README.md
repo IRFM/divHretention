@@ -42,7 +42,7 @@ filenames = [
 ]
 
 for i, filename in enumerate(filenames):
-    res = process_file(filename)
+    res = process_file(filename, filetype="WEST")
     plt.plot(res.arc_length, res.inventory, label="Case {}".format(i+1))
 
 
