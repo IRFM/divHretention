@@ -2,8 +2,17 @@ import numpy as np
 
 
 class Exposition:
-    def __init__(self, filename):
+    """Object containing information regarding the exposure conditions based
+    on an input file.
+
+
+    Args:
+        filename (str): file path
+        filetype (str): "ITER" or "WEST"
+    """
+    def __init__(self, filename, filetype):
         self.filename = filename
+        self.filetype = filetype
         self.arc_length = []
         self.E_ion = []
         self.E_atom = []
@@ -19,9 +28,11 @@ class Exposition:
     def extract_data(self):
         """Extracts exposure data from a CSV file
         """
-        if "ITER" in self.filename:
+        if self.filetype not in ["ITER", "WEST"]:
+            raise ValueError("Unknown filetype")
+        if self.filetype == "ITER":
             self.extract_ITER_data(self.filename)
-        elif "WEST" in self.filename:
+        elif self.filetype == "WEST":
             self.extract_WEST_data(self.filename)
 
     def extract_WEST_data(self, filename):

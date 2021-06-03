@@ -10,12 +10,13 @@ DEFAULT_TIME = 1e7
 database_inv_sig = {}
 
 
-def process_file(filename, inventory=True, time=DEFAULT_TIME):
+def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
     """Computes an output given a filename
 
     Args:
         filename (str): CSV file path. See extract_data() for information on
             the formatting.
+        filetype (str): The type of CSV file "ITER" or "WEST".
         inventory (bool, optional): If True, the inventories and standard
             deviation will be computed and stored in the output. Defaults to
             True.
@@ -29,7 +30,7 @@ def process_file(filename, inventory=True, time=DEFAULT_TIME):
     # arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
     #     atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
     #     extract_data(filename)
-    my_exposition = extract_data.Exposition(filename)
+    my_exposition = extract_data.Exposition(filename, filetype)
     # Surface temperature from Delaporte-Mathurin et al, SREP 2020
     # https://www.nature.com/articles/s41598-020-74844-w
     T = 1.1e-4*my_exposition.net_heat_flux + 323
