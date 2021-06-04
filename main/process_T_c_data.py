@@ -101,7 +101,7 @@ for c in [*np.logspace(22 + np.log10(2), 23, num=7), *np.logspace(21 + np.log10(
     D = 1.326e-10
     n = 6.93e25
     e = (t*2*D*c/n)**0.5
-    inv = n*e*30e-3
+    inv = n*e*L
     data[-1]["t"] = t
     data[-1]["inventory"] = inv
 
