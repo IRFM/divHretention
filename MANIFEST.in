@@ -1,2 +1,0 @@
-include main/data/data_TRIM_energy_angle.csv
-include main/data/monoblock_data/*/*/*.csv
