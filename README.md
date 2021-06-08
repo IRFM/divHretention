@@ -1,5 +1,7 @@
 # divHretention
 
+:point_right: [Documentation](https://divhretention.readthedocs.io/en/latest/)
+
 # Get started
 ```
 pip install divHretention
