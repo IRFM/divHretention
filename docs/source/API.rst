@@ -4,41 +4,24 @@ API
 compute_c_max
 ^^^^^^^^^^^^^
 
-.. automodule:: main.compute_c_max
+.. automodule:: divHretention.compute_inventory
    :members:
    :undoc-members:
    :show-inheritance:
 
-compute_inventory
-^^^^^^^^^^^^^^^^^
-   
-   .. automodule:: main.compute_inventory
-      :members:
-      :undoc-members:
-      :show-inheritance:
+blablablablaa
+^^^^^^^^^^^^^
 
-estimate_inventory_with_gp_regression
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: main.estimate_inventory_with_gp_regression
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Exposition
-^^^^^^^^^^
-
-.. automodule:: main.Exposition
+.. automodule:: divHretention.inventory_T_c
    :members:
    :undoc-members:
    :show-inheritance:
 
 
+Data from files
+^^^^^^^^^^^^^^^
 
-process_file
-^^^^^^^^^^^^
-
-.. automodule:: main.process_file
+.. automodule:: divHretention.extract_data
    :members:
    :undoc-members:
    :show-inheritance:
