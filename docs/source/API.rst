@@ -12,6 +12,7 @@ Hydrogen inventory
    :members:
    :show-inheritance:
 
+.. autofunction:: divHretention.fetch_inventory_and_error
 
 From files
 ^^^^^^^^^^
