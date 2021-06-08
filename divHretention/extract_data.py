@@ -86,8 +86,8 @@ class Exposition:
         # angles not given
         default_angle_ion = 60
         default_angle_atom = 45
-        self.angles_ions = np.ones(arc_length.shape)*default_angle_ion
-        self.angles_atoms = np.ones(arc_length.shape)*default_angle_atom
+        self.angles_ions = np.ones(self.arc_length.shape)*default_angle_ion
+        self.angles_atoms = np.ones(self.arc_length.shape)*default_angle_atom
 
         e = 1.6e-19  # C
         self.ion_flux = self.data["D_flux_ion"]
