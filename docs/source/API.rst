@@ -8,7 +8,6 @@ Hydrogen inventory
    :members:
    :show-inheritance:
 
-
 .. automodule:: divHretention.inventory_T_c
    :members:
    :show-inheritance:
