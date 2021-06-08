@@ -11,7 +11,7 @@ try:
 except ImportError:
     # Try backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
-from main import list_of_low_temp_files, list_of_high_temp_files
+from divHretention import list_of_low_temp_files, list_of_high_temp_files
 from .data import mb_high_temp
 from .data import mb_low_temp
 
