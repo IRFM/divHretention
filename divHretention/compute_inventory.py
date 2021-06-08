@@ -67,6 +67,7 @@ def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
 def compute_inventory(T, c_max, time):
     """Computes the monoblock inventory as a function of the surface
     temperature, surface concentration and exposure time.
+
     If the time is not already in database_inv_sig, another gaussian
     regression is performed.
 

@@ -4,18 +4,33 @@ import numpy as np
 class Exposition:
     """Object containing information regarding the exposure conditions based
     on an input file.
-    An input file for ITER must have the following columns:
-    "x" (arc length in m), "Te" (electron temperature in eV),
-    "Ti" (ion temperature in eV), "D_temp_atm" (atom temperature eV),
+
+    An input file for **ITER** must have the following columns:
+    "x" (arc length in m),
+
+    "Te" (electron temperature in eV),
+    "Ti" (ion temperature in eV),
+
+    "D_temp_atm" (atom temperature eV),
     "D_flux_ion" (ion flux in m-2 s-1), "D_flux_atm" (atom flux in m-2 s-1),
+
     "Wtot" (heat flux in W/m2)
-    An input file for WEST must have the following columns:
+
+
+    An input file for **WEST** must have the following columns
+
     "s_cell_m" (arc length in m), "E_imp_ion_eV" (ion energy in eV),
+
     "E_imp_atom_eV" (atom temperature eV),
+
     "alpha_V_ion_deg" (angle of incidence for ions in deg),
+
     "alpha_V_atom_deg" (angle of incidence for atoms in deg),
+
     "flux_inc_ion_m2s1" (ion flux in m-2 s-1),
+
     "flux_inc_atom_m2s1" (atom flux in m-2 s-1),
+
     "net_energy_flux_Wm2" (heat flux in W/m2)
 
 
