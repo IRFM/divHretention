@@ -1,18 +1,14 @@
 .. divHretention documentation master file
 
-divHretention
-=============
-blablabla
-
 .. toctree::
    :maxdepth: 2
 
    example_usage
    API
 
+.. mdinclude:: ../../README.md
 
-Get started
------------
+
 
 
 Indices and tables
