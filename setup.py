@@ -9,7 +9,7 @@ setuptools.setup(
     url="https://github.com/IRFM/divHretention",
     packages=setuptools.find_packages(),
     package_dir={"divHretention": "divHretention"},
-    data_files=[("", ["LICENSE.txt"])],
+    data_files=[("", ["LICENSE"])],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
