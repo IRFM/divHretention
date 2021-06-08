@@ -82,6 +82,13 @@ class plot_Tc_map_with_subplots():
         plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)")#, fontsize=12)
 
     def add_case(self, filename, filetype):
+        """Adds a new exposure case to the plot.
+
+        Args:
+            filename (str): The CSV file name.
+            filetype (str): The CSV file type
+                ("WEST" or "ITER").
+        """
         self.count += 1
         self.filenames.append(filename)
         xlabel = "Distance along divertor (m)"
@@ -108,6 +115,8 @@ class plot_Tc_map_with_subplots():
         plt.tight_layout()
 
     def show(self):
+        """Similar to matplotlib.pyplot.show()
+        """
         plt.show()
 
 

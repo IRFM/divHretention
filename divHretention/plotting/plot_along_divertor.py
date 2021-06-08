@@ -147,7 +147,7 @@ class plot_along_divertor():
 
         Args:
             filename (str): The CSV file name.
-            filetype (str): The CSV file types
+            filetype (str): The CSV file type
                 ("WEST" or "ITER").
             color (str): the color of the line.
 
@@ -204,7 +204,7 @@ def create_correspondance_dict(filename, filetype):
 
     Args:
         filename (str): The CSV file name.
-        filetype (str): The CSV file types
+        filetype (str): The CSV file type
             ("WEST" or "ITER").
 
     Returns:
