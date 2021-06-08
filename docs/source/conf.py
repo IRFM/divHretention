@@ -57,3 +57,6 @@ html_theme = 'default'
 # html_static_path = ['_static']
 
 master_doc = 'index'
+
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'sphinx'
