@@ -2,7 +2,7 @@
 
 # Get started
 ```
-pip install -r requirements.txt
+pip install divHretention
 ```
 
 Click [here](https://github.com/RemDelaporteMathurin/WEST-H-retention/blob/master/WEST_inventory.ipynb) for examples.
@@ -13,7 +13,7 @@ Click [here](https://github.com/RemDelaporteMathurin/WEST-H-retention/blob/maste
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
-from main import compute_inventory
+from divHretention import compute_inventory
 
 arc_length = np.linspace(0, 1)  # arc length (m) along the divertor
 T = 1100*np.exp(-arc_length)  # temperature (K) profile
@@ -35,7 +35,7 @@ plt.show()
 import matplotlib.pyplot as plt
 import numpy as np
 
-from main import process_file
+from divHretention import process_file
 filenames = [
     "data/exposure_conditions_divertor/WEST/West-LSN-P1.6e+21-IP0.449MW.csv",
     "data/exposure_conditions_divertor/WEST/West-LSN-P2.5e+21-IP1.500MW.csv",
