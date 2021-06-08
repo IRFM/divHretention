@@ -1,16 +1,12 @@
-API
-===
+API reference
+=============
 
 Hydrogen inventory
 ^^^^^^^^^^^^^^^^^^
 
-.. automodule:: divHretention.compute_inventory
-   :members:
-   :show-inheritance:
+.. autofunction:: divHretention.compute_inventory
 
-.. automodule:: divHretention.inventory_T_c
-   :members:
-   :show-inheritance:
+.. autofunction:: divHretention.inventory_T_c
 
 .. autofunction:: divHretention.fetch_inventory_and_error
 
