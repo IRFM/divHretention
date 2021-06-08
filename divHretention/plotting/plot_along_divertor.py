@@ -57,6 +57,29 @@ correspondance_dict = {
 
 
 class plot_along_divertor():
+    """Plots some quantities along the divertor arc length. This class works
+    with csv files (see :func:`Exposition()
+    <divHretention.extract_data.Exposition>`).
+
+    Args:
+        filenames (list, optional): The CSV file names. Defaults to [].
+        filetypes (list or str, optional): The CSV file types
+            ("WEST" or "ITER"). Defaults to [].
+        quantities (list, optional): The quantities to be plotted
+            (see :py:meth:`correspondance_dict` in
+            :py:mod:`plot_along_divertor`). Defaults to ["sigma_inv"].
+        figsize (tuple, optional): The size of the figure. Defaults to (8, 8).
+        plot_sigma (bool, optional): If true, the 95% confidence interval will
+            be plotted. Defaults to True.
+        overlap_ions_atoms (bool, optional): If True, energies, fluxes and
+            angles of ions and atoms will be plotted on the same plot.
+            Defaults to True.
+        colors (list, optional): List of matplotlib colors. The length of
+            `colors` must be the same as `filetypes`. Defaults to None.
+
+    Raises:
+        ValueError: if missing the filetypes argument
+    """
     def __init__(
             self, filenames=[], filetypes=[], quantities=["sigma_inv"],
             figsize=(8, 8), plot_sigma=True, overlap_ions_atoms=True,
@@ -87,7 +110,11 @@ class plot_along_divertor():
             self.add_case(filename, filetype, color)
 
     def compute_nrows(self):
+        """Compute the number of rows needed
 
+        Returns:
+            int, list: number of rows, list of axes
+        """
         if not self.overlap_ions_atoms:
             N = len(self.quantities)
             axs_ids = [i for i in range(N)]
@@ -116,6 +143,17 @@ class plot_along_divertor():
         return N, axs_ids
 
     def add_case(self, filename, filetype, color):
+        """Adds a new exposure case to the plot.
+
+        Args:
+            filename (str): The CSV file name.
+            filetype (str): The CSV file types
+                ("WEST" or "ITER").
+            color (str): the color of the line.
+
+        Raises:
+            ValueError: If a quantity is unknown.
+        """
         self.count += 1
         self.filenames.append(filename)
 
@@ -156,10 +194,22 @@ class plot_along_divertor():
         plt.legend()
 
     def show(self):
+        """Similar to matplotlib.pyplot.show()
+        """
         plt.show()
 
 
 def create_correspondance_dict(filename, filetype):
+    """Creates a correspondance dictionary link for the case
+
+    Args:
+        filename (str): The CSV file name.
+        filetype (str): The CSV file types
+            ("WEST" or "ITER").
+
+    Returns:
+        dict: correspondance dictionary with a "var" key for each quantity
+    """
     my_exposition = extract_data.Exposition(filename, filetype)
     res = process_file(filename, filetype)
     correspondance_dict["arc_length"]["var"] = res.arc_length
@@ -179,17 +229,20 @@ def create_correspondance_dict(filename, filetype):
 
 
 class plot_T_c_inv_along_divertor(plot_along_divertor):
-    def __init__(self, filenames=[], filetypes=[], **kwargs):
-
+    """Plots the temperature, concentration and inventory distribution along
+    the divertor
+    """
+    def __init__(self, **kwargs):
         super().__init__(
             quantities=["T_surf", "c_surf", "inventory"],
-            filenames=filenames,
-            filetypes=filetypes,
             **kwargs)
 
 
 class plot_particle_exposure_along_divertor(plot_along_divertor):
-    def __init__(self, filenames=[], filetypes=[], **kwargs):
+    """Plots the exposure condition (particle fluxes, energies and angles)
+    along the divertor
+    """
+    def __init__(self, **kwargs):
         quantities = [
             "atom_flux", "ion_flux",
             "ion_energy", "atom_energy",
@@ -197,6 +250,4 @@ class plot_particle_exposure_along_divertor(plot_along_divertor):
             ]
         super().__init__(
             quantities=quantities,
-            filenames=filenames,
-            filetypes=filetypes,
             **kwargs)
