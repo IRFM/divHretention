@@ -8,7 +8,7 @@ setuptools.setup(
     description="Tool to estimate H retention in tokamak divertors",
     url="https://github.com/IRFM/divHretention",
     packages=setuptools.find_packages(),
-    package_dir={"divHretention": "main"},
+    package_dir={"divHretention": "divHretention"},
     data_files=[("", ["LICENSE.txt"])],
     classifiers=[
         "Programming Language :: Python :: 3",
