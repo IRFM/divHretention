@@ -86,7 +86,7 @@ class Exposition:
         # angles not given
         default_angle_ion = 60
         default_angle_atom = 45
-        self.angles_ions = np.ones(arc_length_0.shape)*default_angle_ion
+        self.angles_ions = np.ones(arc_length.shape)*default_angle_ion
         self.angles_atoms = np.ones(arc_length.shape)*default_angle_atom
 
         e = 1.6e-19  # C
