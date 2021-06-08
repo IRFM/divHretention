@@ -10,7 +10,7 @@ except ImportError:
     # Try backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
 
-from . import data as data_module  # relative-import the *package* containing the templates
+from divHretention import data as data_module  # relative-import the *package* containing the templates
 
 with pkg_resources.path(data_module, "data_TRIM_energy_angle.csv") as p:
     data = np.genfromtxt(p, delimiter=";", names=True)
