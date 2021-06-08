@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 
-from main import process_file, extract_data
+from divHretention import process_file, extract_data
 
 correspondance_dict = {
     "arc_length": {

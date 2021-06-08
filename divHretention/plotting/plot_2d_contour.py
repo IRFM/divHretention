@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 
-from main import process_file, DEFAULT_TIME, database_inv_sig
+from divHretention import process_file, DEFAULT_TIME, database_inv_sig
 
 
 class plot_Tc_map_with_subplots():
