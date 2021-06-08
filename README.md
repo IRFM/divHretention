@@ -1,6 +1,26 @@
 # divHretention
 
+divHretention is a tool to estimate ITER-like monoblock H inventories based on their surface temperature and surface concentration of H.
+
+This package can be used to estimate H retention in tokamak divertors.
+
+If you're using this package, please consider citing:
+
+```
+@article{delaporte-mathurin_parametric_2020,
+	author = {Delaporte-Mathurin, Rémi and Hodille, Etienne and Mougenot, Jonathan and De Temmerman, Gregory and Charles, Yann and Grisolia, Christian},
+	title = {Parametric study of hydrogenic inventory in the {ITER} divertor based on machine learning},
+	journal = {Scientific Reports},
+	volume = {10},
+	number = {1},
+	year = {2020},
+	pages = {17798},
+	doi = {10.1038/s41598-020-74844-w},
+}
+```
+
 :point_right: [Documentation](https://divhretention.readthedocs.io/en/latest/)
+:point_right: [Publication](https://doi.org/10.1038/s41598-020-74844-w)
 
 # Get started
 ```
