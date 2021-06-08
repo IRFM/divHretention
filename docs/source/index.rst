@@ -9,8 +9,8 @@ divHretention
    example_usage
    API
 
-Get started
------------
+Installation
+------------
 
 .. code-block:: bash
 
