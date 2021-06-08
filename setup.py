@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="divHretention",
-    version="0.1",
+    version="0.1.1",
     author="Remi Delaporte-Mathurin",
     author_email="rdelaportemathurin@gmail.com",
     description="Tool to estimate H retention in tokamak divertors",
