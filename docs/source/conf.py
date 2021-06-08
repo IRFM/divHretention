@@ -57,3 +57,5 @@ html_theme = 'default'
 # html_static_path = ['_static']
 
 master_doc = 'index'
+
+highlight_language = 'none'
