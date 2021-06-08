@@ -6,6 +6,20 @@ from divHretention import process_file, DEFAULT_TIME, database_inv_sig
 
 
 class plot_Tc_map_with_subplots():
+    """Plots the (T, concentration) map with distribution plots on the side.
+    This class works with csv files (see :func:`Exposition()
+    <divHretention.extract_data.Exposition>`)
+
+    Args:
+        filenames (list, optional): The CSV file names. Defaults to [].
+        filetypes (list, optional): The CSV file types ("WEST" or "ITER").
+            Defaults to [].
+        T_bounds (list, optional): The limits for T (K).
+            Defaults to [320, 1200].
+        c_bounds (list, optional): The limits for concentration (H m-3).
+            Defaults to [1e20, 1e23].
+        figsize (tuple, optional): The size of the figure. Defaults to (8, 8).
+    """
     def __init__(
             self, filenames=[], filetypes=[], T_bounds=[320, 1200],
             c_bounds=[1e20, 1e23], figsize=(8, 8), **kwargs):
@@ -68,6 +82,13 @@ class plot_Tc_map_with_subplots():
         plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)")#, fontsize=12)
 
     def add_case(self, filename, filetype):
+        """Adds a new exposure case to the plot.
+
+        Args:
+            filename (str): The CSV file name.
+            filetype (str): The CSV file type
+                ("WEST" or "ITER").
+        """
         self.count += 1
         self.filenames.append(filename)
         xlabel = "Distance along divertor (m)"
@@ -94,6 +115,8 @@ class plot_Tc_map_with_subplots():
         plt.tight_layout()
 
     def show(self):
+        """Similar to matplotlib.pyplot.show()
+        """
         plt.show()
 
 

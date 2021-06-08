@@ -25,7 +25,7 @@ def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
 
     Returns:
         Output(): object with attributes "arc_length", "temperature",
-            "concentration", "inventory", "sigma_inv"
+        "concentration", "inventory", "sigma_inv"
     """
     # arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
     #     atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
@@ -67,6 +67,7 @@ def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
 def compute_inventory(T, c_max, time):
     """Computes the monoblock inventory as a function of the surface
     temperature, surface concentration and exposure time.
+
     If the time is not already in database_inv_sig, another gaussian
     regression is performed.
 
@@ -77,7 +78,7 @@ def compute_inventory(T, c_max, time):
 
     Returns:
         numpy.array, numpy.array: list of inventories (H/m), list of standard
-            deviation
+        deviation
     """
     if time not in database_inv_sig.keys():  # if time is not in the database
         GP = estimate_inventory_with_gp_regression(time=time)
@@ -132,8 +133,8 @@ def compute_c_max(
 
     Returns:
         numpy.array or (numpy.array, numpy.array, numpy.array): surface
-            concentration or (surface concentration, surface conc. ions,
-            surface conc. atoms)
+        concentration or (surface concentration, surface conc. ions,
+        surface conc. atoms)
     """
     # Diffusion coefficient Fernandez et al Acta Materialia (2015)
     # https://doi.org/10.1016/j.actamat.2015.04.052
