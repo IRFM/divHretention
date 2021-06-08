@@ -27,7 +27,7 @@ If you're using this package, please consider citing:
 pip install divHretention
 ```
 
-Click [here](https://github.com/RemDelaporteMathurin/WEST-H-retention/blob/master/WEST_inventory.ipynb) for examples.
+Click [here](https://divhretention.readthedocs.io/en/latest/WEST_inventory.html#Run-the-routine-from-files) for examples.
 
 
 ## Basic usage
