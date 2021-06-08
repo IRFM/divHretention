@@ -64,23 +64,19 @@ def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
     return output
 
 
-def compute_inventory(T, c_max, time):
-    """Computes the monoblock inventory as a function of the surface
-    temperature, surface concentration and exposure time.
-
-    If the time is not already in database_inv_sig, another gaussian
-    regression is performed.
+def fetch_inventory_and_error(time):
+    """Fetch the inventory and error for a given time
 
     Args:
-        T (list): Surface temperature (K)
-        c_max (list): Surface concentration (H m-3)
-        time (float): Exposure time (s)
+        time (float): time (s)
 
     Returns:
-        numpy.array, numpy.array: list of inventories (H/m), list of standard
-        deviation
+        callable, callable: inventory(T, c), standard deviation(T, c)
     """
-    if time not in database_inv_sig.keys():  # if time is not in the database
+    if time in database_inv_sig.keys():  # fetch in database
+        inv_T_c_local = database_inv_sig[time]["inv"]
+        sig_inv_local = database_inv_sig[time]["sig"]
+    else:  # if time is not in the database
         GP = estimate_inventory_with_gp_regression(time=time)
 
         def inv_T_c_local(T, c):
@@ -97,13 +93,31 @@ def compute_inventory(T, c_max, time):
                 val = GP((T, np.log10(c)))[1][0]
             return val
 
+        # add to database for later use
         database_inv_sig[time] = {
             "inv": inv_T_c_local,
             "sig": sig_inv_local
         }
-    else:
-        inv_T_c_local = database_inv_sig[time]["inv"]
-        sig_inv_local = database_inv_sig[time]["sig"]
+    return inv_T_c_local, sig_inv_local
+
+
+def compute_inventory(T, c_max, time):
+    """Computes the monoblock inventory as a function of the surface
+    temperature, surface concentration and exposure time.
+
+    If the time is not already in database_inv_sig, another gaussian
+    regression is performed.
+
+    Args:
+        T (list): Surface temperature (K)
+        c_max (list): Surface concentration (H m-3)
+        time (float): Exposure time (s)
+
+    Returns:
+        numpy.array, numpy.array: list of inventories (H/m), list of standard
+        deviation
+    """
+    inv_T_c_local, sig_inv_local = fetch_inventory_and_error(time)
     # compute inventory (H/m) along divertor
     inventories = [
         float(inv_T_c_local(T_, c)) for T_, c in zip(T, c_max)]

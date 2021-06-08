@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 
-from divHretention import process_file, DEFAULT_TIME, database_inv_sig
+from divHretention import process_file, DEFAULT_TIME, database_inv_sig, fetch_inventory_and_error
 
 
 class plot_Tc_map_with_subplots():
@@ -21,7 +21,7 @@ class plot_Tc_map_with_subplots():
         figsize (tuple, optional): The size of the figure. Defaults to (8, 8).
     """
     def __init__(
-            self, filenames=[], filetypes=[], T_bounds=[320, 1200],
+            self, filenames=[], filetypes=[], time=DEFAULT_TIME, T_bounds=[320, 1200],
             c_bounds=[1e20, 1e23], figsize=(8, 8), **kwargs):
 
         self.fig, (self.axs_top, self.axs_bottom) = \
@@ -34,6 +34,8 @@ class plot_Tc_map_with_subplots():
             self.filetypes = [filetypes for _ in filenames]
         else:
             self.filetypes = filetypes[:]
+
+        self.time = time
         self.T_bounds = T_bounds
         self.c_bounds = c_bounds
 
@@ -68,7 +70,7 @@ class plot_Tc_map_with_subplots():
         x = np.linspace(*self.T_bounds, num=50)
         y = np.logspace(np.log10(self.c_bounds[0]), np.log10(self.c_bounds[1]), num=10)
         XX, YY = np.meshgrid(x, y)
-        values, levels = create_2d_inv_array(XX, YY)
+        values, levels = create_2d_inv_array(XX, YY, time=self.time)
 
         # plot the inventory contour
         locator = ticker.LogLocator(base=10)
@@ -120,12 +122,13 @@ class plot_Tc_map_with_subplots():
         plt.show()
 
 
-def create_2d_inv_array(XX, YY):
+def create_2d_inv_array(XX, YY, time=DEFAULT_TIME):
     values = np.zeros(XX.shape)
     min_value, max_value = np.float("inf"), np.float("-inf")
     for i in range(len(XX)):
         for j in range(len(XX[i])):
-            val = database_inv_sig[DEFAULT_TIME]["inv"](XX[i][j], YY[i][j])
+            inventory = fetch_inventory_and_error(time)[0]
+            val = inventory(XX[i][j], YY[i][j])
             values[i][j] = val
             min_value = min(min_value, float(val))
             max_value = max(max_value, float(val))
