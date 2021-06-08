@@ -1,6 +1,5 @@
-divHretention
-=============
-blablabla
+Example
+=======
 
 .. toctree::
     :maxdepth: 2
