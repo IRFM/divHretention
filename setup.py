@@ -16,10 +16,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'numpy==1.20.3',
-        'scipy==1.6.3',
+        'numpy>=1.19',
+        'scipy>=1.6',
         'inference-tools==0.5.4',
-        'matplotlib==3.4.2',
+        'matplotlib>=3.3',
     ],
     zip_safe=True,
     include_package_data=True,
