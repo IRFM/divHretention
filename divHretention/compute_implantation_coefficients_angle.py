@@ -20,10 +20,11 @@ with pkg_resources.path(data_module, "data_TRIM_energy_angle.csv") as p:
     data = np.genfromtxt(p, delimiter=";", names=True)
 
 print(time.time() - start)
+step = 5
+sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"][::step], data["theta_inc"][::step])]
 
 # interpolate reflection coeff
-sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"], data["theta_inc"])]
-GP_reflection_coeff = GpRegressor(sim_points, data["Reflection_coeff"], kernel=RationalQuadratic)
+GP_reflection_coeff = GpRegressor(sim_points, data["Reflection_coeff"][::step], kernel=RationalQuadratic)
 
 time2 = time.time()
 print(time2 - start)
@@ -43,16 +44,15 @@ def reflection_coeff(energy, angle):
         return GP_reflection_coeff((np.log10(energy), angle))[0]
 
 # interpolate implantation range
-sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"], data["theta_inc"])]
-GP_imp_range = GpRegressor(sim_points, data["Implantation_range"], kernel=RationalQuadratic)
+GP_imp_range = GpRegressor(sim_points, data["Implantation_range"][::step], kernel=RationalQuadratic)
 
 # evaluate the estimate
-# Nx, Ny = 3, 2
-# gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
-# gp_y = np.linspace(0, 80, Ny)
+Nx, Ny = 3, 2
+gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
+gp_y = np.linspace(0, 80, Ny)
 
-# gp_coords = [(i, j) for i in gp_x for j in gp_y]
-# mu_implantation_range, sig_implantation_range = GP_imp_range(gp_coords)
+gp_coords = [(i, j) for i in gp_x for j in gp_y]
+mu_implantation_range, sig_implantation_range = GP_imp_range(gp_coords)
 
 # implantation_range = interp2d(10**gp_x, gp_y, mu_implantation_range, kind='linear')
 def implantation_range(energy, angle):
