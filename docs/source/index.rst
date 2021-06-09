@@ -7,7 +7,7 @@ divHretention
    :maxdepth: 2
 
    example_usage
-   API
+   api/index.rst
 
 Installation
 ------------
