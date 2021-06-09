@@ -18,35 +18,45 @@ from . import data as data_module  # relative-import the *package* containing th
 
 with pkg_resources.path(data_module, "data_TRIM_energy_angle.csv") as p:
     data = np.genfromtxt(p, delimiter=";", names=True)
-print(time.time() - start)
+
 # interpolate reflection coeff
 sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"], data["theta_inc"])]
-GP = GpRegressor(sim_points, data["Reflection_coeff"], kernel=RationalQuadratic)
+GP_reflection_coeff = GpRegressor(sim_points, data["Reflection_coeff"], kernel=RationalQuadratic)
 
 # evaluate the estimate
-Nx, Ny = 60, 5
-gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
-gp_y = np.linspace(0, 80, Ny)
+# Nx, Ny = 60, 5
+# gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
+# gp_y = np.linspace(0, 80, Ny)
 
-gp_coords = [(i, j) for i in gp_x for j in gp_y]
-mu_reflection, sig_reflection = GP(gp_coords)
+# gp_coords = [(i, j) for i in gp_x for j in gp_y]
+# mu_reflection, sig_reflection = GP_reflection_coeff(gp_coords)
 
-reflection_coeff = interp2d(10**gp_x, gp_y, mu_reflection, kind='cubic')
+# reflection_coeff = interp2d(10**gp_x, gp_y, mu_reflection, kind='cubic')
+def reflection_coeff(energy, angle):
+    if energy == 0:
+        return 0
+    else:
+        return GP_reflection_coeff((np.log10(energy), angle))[0]
 
 # interpolate implantation range
 sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"], data["theta_inc"])]
-GP = GpRegressor(sim_points, data["Implantation_range"], kernel=RationalQuadratic)
+GP_imp_range = GpRegressor(sim_points, data["Implantation_range"], kernel=RationalQuadratic)
 
 # evaluate the estimate
-Nx, Ny = 3, 2
-gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
-gp_y = np.linspace(0, 80, Ny)
+# Nx, Ny = 3, 2
+# gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
+# gp_y = np.linspace(0, 80, Ny)
 
-gp_coords = [(i, j) for i in gp_x for j in gp_y]
-mu_implantation_range, sig_implantation_range = GP(gp_coords)
+# gp_coords = [(i, j) for i in gp_x for j in gp_y]
+# mu_implantation_range, sig_implantation_range = GP_imp_range(gp_coords)
 
-implantation_range = interp2d(10**gp_x, gp_y, mu_implantation_range, kind='linear')
-print(time.time() - start)
+# implantation_range = interp2d(10**gp_x, gp_y, mu_implantation_range, kind='linear')
+def implantation_range(energy, angle):
+    if energy == 0:
+        return 0
+    else:
+        return GP_imp_range((np.log10(energy), angle))[0]
+
 if __name__ == '__main__':
     XX, YY = np.meshgrid(10**gp_x, gp_y)
     mu_mu = mu_implantation_range.reshape([Nx, Ny]).T
