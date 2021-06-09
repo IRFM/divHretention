@@ -17,7 +17,7 @@ setuptools.setup(
     ],
     install_requires=[
         'numpy>=1.19',
-        'scipy>=1.6',
+        'scipy>=1.5',
         'inference-tools==0.5.4',
         'matplotlib>=3.3',
     ],
