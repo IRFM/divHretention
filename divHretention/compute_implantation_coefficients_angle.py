@@ -22,7 +22,6 @@ sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"][:
 # interpolate reflection coeff
 GP_reflection_coeff = GpRegressor(sim_points, data["Reflection_coeff"][::step], kernel=RationalQuadratic)
 
-time2 = time.time()
 # evaluate the estimate
 # Nx, Ny = 60, 5
 # gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
