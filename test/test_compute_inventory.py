@@ -2,7 +2,7 @@ import time
 import pytest
 import numpy as np
 
-import divHretention
+# import divHretention
 
 
 def test_fecth_inventory_and_error():
