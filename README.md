@@ -1,5 +1,8 @@
 # divHretention
 
+[![codecov](https://codecov.io/gh/IRFM/divHretention/branch/master/graph/badge.svg?token=WZVYJJHZ15)](https://codecov.io/gh/IRFM/divHretention)
+
+
 divHretention is a tool to estimate ITER-like monoblock H inventories based on their surface temperature and surface concentration of H.
 
 This package can be used to estimate H retention in tokamak divertors.
