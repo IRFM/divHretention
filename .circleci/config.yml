@@ -7,10 +7,8 @@ jobs:
       - checkout  # checkout source code to working directory
       - run:
           command: |  # create whl and use pipenv to install dependencies
-            sudo pip install pipenv
-            python setup.py sdist
-            pipenv install dist/divHretention-0.1.2.tar.gz
-            pipenv install pytest
+            python setup.py install
+            sudo pip install pytest
       - run:
           command: |  # Run test suite
-            ls
+            pytest test/
