@@ -1,28 +1,5 @@
-API
-===
-
-Hydrogen inventory
-^^^^^^^^^^^^^^^^^^
-
-.. automodule:: divHretention.compute_inventory
-   :members:
-   :show-inheritance:
-
-.. automodule:: divHretention.inventory_T_c
-   :members:
-   :show-inheritance:
-
-.. autofunction:: divHretention.fetch_inventory_and_error
-
-From files
-^^^^^^^^^^
-
-.. automodule:: divHretention.extract_data
-   :members:
-   :show-inheritance:
-
 Plotting
-^^^^^^^^
+========
 
 .. autoclass:: divHretention.plot_Tc_map_with_subplots
    :members:

@@ -1,4 +1,5 @@
 import numpy as np
+from divHretention import DEFAULT_TIME, compute_c_max, compute_inventory
 
 
 class Exposition:
@@ -105,6 +106,57 @@ class Exposition:
         default_energy = 0.0
         np.nan_to_num(self.E_ion, copy=False, nan=default_energy)
         np.nan_to_num(self.E_atom, copy=False, nan=default_energy)
+
+
+def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
+    """Computes an output given a filename
+
+    Args:
+        filename (str): CSV file path. See extract_data.Exposition for
+            information on the formatting.
+        filetype (str): The type of CSV file "ITER" or "WEST".
+        inventory (bool, optional): If True, the inventories and standard
+            deviation will be computed and stored in the output. Defaults to
+            True.
+        time (float, optional): Time in seconds at which the inventory is
+            computed. Defaults to 1e7.
+
+    Returns:
+        Output(): object with attributes "arc_length", "temperature",
+        "concentration", "inventory", "sigma_inv"
+    """
+    my_exposition = Exposition(filename, filetype)
+    # Surface temperature from Delaporte-Mathurin et al, SREP 2020
+    # https://www.nature.com/articles/s41598-020-74844-w
+    T = 1.1e-4*my_exposition.net_heat_flux + 323
+
+    # Compute the surface H concentration
+    c_max = compute_c_max(
+        T,
+        my_exposition.E_ion,
+        my_exposition.E_atom,
+        my_exposition.angles_ions,
+        my_exposition.angles_atoms,
+        my_exposition.ion_flux,
+        my_exposition.atom_flux)
+
+    if inventory:
+        # compute inventory as a function of temperature and concentration
+        inventories, sigmas = compute_inventory(T, c_max, time=time)
+
+    # output dict
+    class Output:
+        pass
+
+    output = Output()
+    output.arc_length = my_exposition.arc_length
+    output.temperature = T
+    output.concentration = c_max
+    if inventory:
+        output.inventory = inventories
+        output.sigma_inv = sigmas
+
+    return output
 
 
 if __name__ == "__main__":
