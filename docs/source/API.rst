@@ -4,11 +4,13 @@ API reference
 Hydrogen inventory
 ^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: divHretention.compute_inventory
+.. automodule:: divHretention.compute_inventory
+   :members:
+   :show-inheritance:
 
-.. autofunction:: divHretention.inventory_T_c
-
-.. autofunction:: divHretention.fetch_inventory_and_error
+.. automodule:: divHretention.inventory_T_c
+   :members:
+   :show-inheritance:
 
 From files
 ^^^^^^^^^^
