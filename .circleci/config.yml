@@ -11,4 +11,5 @@ jobs:
             sudo pip install pytest
       - run:
           command: |  # Run test suite
-            pytest divHretention/test/
+            ls
+            pytest test/
