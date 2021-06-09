@@ -11,7 +11,7 @@ jobs:
             sudo pip install pytest
       - run:
           command: |  # Run test suite
-            pytest test/ -v --cov=paramak --cov-report term --cov-report xml --junitxml=test-reports/junit.xml
+            pytest test/ -v --cov=divHretention --cov-report term --cov-report xml --junitxml=test-reports/junit.xml
 
       - store_test_results:
           path: test-reports
