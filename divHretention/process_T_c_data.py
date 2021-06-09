@@ -41,15 +41,16 @@ for s in strings:
     t = []
     inventory = []
     with pkg_resources.path(mb_high_temp, s) as file_path:
-        with open(file_path, 'r') as csvfile:
-            plots = csv.reader(csvfile, delimiter=',')
-            next(plots)
-            for row in plots:
-                t.append(float(row[0]))
-                inventory.append(
-                    2*(float(row[-1]) +
-                        float(row[-2]) +
-                        float(row[-3])))
+        print('')
+        # with open(file_path, 'r') as csvfile:
+        #     plots = csv.reader(csvfile, delimiter=',')
+        #     next(plots)
+        #     for row in plots:
+        #         t.append(float(row[0]))
+        #         inventory.append(
+        #             2*(float(row[-1]) +
+        #                 float(row[-2]) +
+        #                 float(row[-3])))
 #     # extrapolate to small times
 #     a, b = fit_powerlaw(t, inventory)
 #     t_ = np.logspace(2, 4, num=100)
