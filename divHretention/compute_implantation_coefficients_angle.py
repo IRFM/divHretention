@@ -14,7 +14,7 @@ import time
 
 start = time.time()
 from . import data as data_module  # relative-import the *package* containing the templates
-print(time.time() - start)
+
 
 with pkg_resources.path(data_module, "data_TRIM_energy_angle.csv") as p:
     data = np.genfromtxt(p, delimiter=";", names=True)
@@ -46,7 +46,7 @@ gp_coords = [(i, j) for i in gp_x for j in gp_y]
 mu_implantation_range, sig_implantation_range = GP(gp_coords)
 
 implantation_range = interp2d(10**gp_x, gp_y, mu_implantation_range, kind='linear')
-
+print(time.time() - start)
 if __name__ == '__main__':
     XX, YY = np.meshgrid(10**gp_x, gp_y)
     mu_mu = mu_implantation_range.reshape([Nx, Ny]).T
