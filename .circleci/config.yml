@@ -8,7 +8,7 @@ jobs:
       - run:
           command: |
             sudo python setup.py install
-            sudo pip install pytest
+            sudo pip install pytest-cov
       - run:
           command: |  # Run test suite
             pytest test/ -v --cov=divHretention --cov-report term --cov-report xml --junitxml=test-reports/junit.xml
