@@ -2,66 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from . import implantation_range, reflection_coeff
-from . import extract_data
 from . import estimate_inventory_with_gp_regression
 
 DEFAULT_TIME = 1e7
 
 database_inv_sig = {}
-
-
-def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
-    """Computes an output given a filename
-
-    Args:
-        filename (str): CSV file path. See extract_data.Exposition for
-            information on the formatting.
-        filetype (str): The type of CSV file "ITER" or "WEST".
-        inventory (bool, optional): If True, the inventories and standard
-            deviation will be computed and stored in the output. Defaults to
-            True.
-        time (float, optional): Time in seconds at which the inventory is
-            computed. Defaults to 1e7.
-
-    Returns:
-        Output(): object with attributes "arc_length", "temperature",
-        "concentration", "inventory", "sigma_inv"
-    """
-    # arc_length_div, E_ion_div, E_atom_div, ion_flux_div, \
-    #     atom_flux_div, net_heat_flux_div, angles_ions, angles_atoms, data = \
-    #     extract_data(filename)
-    my_exposition = extract_data.Exposition(filename, filetype)
-    # Surface temperature from Delaporte-Mathurin et al, SREP 2020
-    # https://www.nature.com/articles/s41598-020-74844-w
-    T = 1.1e-4*my_exposition.net_heat_flux + 323
-
-    # Compute the surface H concentration
-    c_max = compute_c_max(
-        T,
-        my_exposition.E_ion,
-        my_exposition.E_atom,
-        my_exposition.angles_ions,
-        my_exposition.angles_atoms,
-        my_exposition.ion_flux,
-        my_exposition.atom_flux)
-
-    if inventory:
-        # compute inventory as a function of temperature and concentration
-        inventories, sigmas = compute_inventory(T, c_max, time=time)
-
-    # output dict
-    class Output:
-        pass
-
-    output = Output()
-    output.arc_length = my_exposition.arc_length
-    output.temperature = T
-    output.concentration = c_max
-    if inventory:
-        output.inventory = inventories
-        output.sigma_inv = sigmas
-
-    return output
 
 
 def fetch_inventory_and_error(time):
