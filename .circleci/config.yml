@@ -11,4 +11,4 @@ jobs:
             sudo pip install pytest
       - run:
           command: |  # Run test suite
-            pytest test/
+            python -c "import divHretention"
