@@ -19,10 +19,14 @@ from . import data as data_module  # relative-import the *package* containing th
 with pkg_resources.path(data_module, "data_TRIM_energy_angle.csv") as p:
     data = np.genfromtxt(p, delimiter=";", names=True)
 
+print(time.time() - start)
+
 # interpolate reflection coeff
 sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"], data["theta_inc"])]
 GP_reflection_coeff = GpRegressor(sim_points, data["Reflection_coeff"], kernel=RationalQuadratic)
 
+time2 = time.time()
+print(time2 - start)
 # evaluate the estimate
 # Nx, Ny = 60, 5
 # gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
@@ -56,6 +60,9 @@ def implantation_range(energy, angle):
         return 0
     else:
         return GP_imp_range((np.log10(energy), angle))[0]
+
+time3 = time.time()
+print(time3 - time2)
 
 if __name__ == '__main__':
     XX, YY = np.meshgrid(10**gp_x, gp_y)
