@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout  # checkout source code to working directory
       - run:
-          command: |  # create whl and use pipenv to install dependencies
+          command: |
             sudo python setup.py install
             sudo pip install pytest
       - run:
