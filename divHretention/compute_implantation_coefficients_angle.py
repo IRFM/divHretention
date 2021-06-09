@@ -18,7 +18,7 @@ from . import data as data_module  # relative-import the *package* containing th
 
 with pkg_resources.path(data_module, "data_TRIM_energy_angle.csv") as p:
     data = np.genfromtxt(p, delimiter=";", names=True)
-
+print(time.time() - start)
 # interpolate reflection coeff
 sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"], data["theta_inc"])]
 GP = GpRegressor(sim_points, data["Reflection_coeff"], kernel=RationalQuadratic)
