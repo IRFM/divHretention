@@ -11,5 +11,4 @@ jobs:
             sudo pip install pytest
       - run:
           command: |  # Run test suite
-            ls
             pytest test/
