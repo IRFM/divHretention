@@ -13,4 +13,4 @@ jobs:
             pipenv install pytest
       - run:
           command: |  # Run test suite
-            pipenv run pytest
+            pipenv run pytest test/
