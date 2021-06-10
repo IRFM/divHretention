@@ -75,3 +75,25 @@ def test_exposition_WEST(tmpdir):
     assert np.array_equal(my_exposure.net_heat_flux, Wtot)
     assert np.array_equal(my_exposure.angles_ions, angle_ions)
     assert np.array_equal(my_exposure.angles_atoms, angle_atoms)
+
+
+def test_process_file_WEST(tmpdir):
+    # build
+    d = tmpdir.mkdir("test_data")
+
+    filename = str(Path(d)) + "/example_WEST.csv"
+    arc_length = np.linspace(0, 1)
+    E_ions = np.linspace(1, 2)
+    E_atoms = np.linspace(3, 4)
+    angle_ions = np.linspace(4, 5)
+    angle_atoms = np.linspace(5, 6)
+    D_temp_atm = np.linspace(6, 7)
+    D_flux_atm = np.linspace(7, 8)
+    D_flux_ion = np.linspace(8, 9)
+    Wtot = np.linspace(9, 10)
+    header = "s_cell_m;E_imp_ion_eV;E_imp_atom_eV;alpha_V_ion_deg;alpha_V_atom_deg;flux_inc_ion_m2s1;flux_inc_atom_m2s1;net_energy_flux_Wm2"
+    data = np.asarray([arc_length, E_ions, E_atoms, angle_ions, angle_atoms, D_flux_ion, D_flux_atm, Wtot]).T
+    np.savetxt(filename, data, delimiter=";", header=header)
+
+    # run
+    out = divHretention.process_file(filename, "WEST")
