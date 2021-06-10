@@ -1,0 +1,19 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.9
+    steps:
+      - checkout  # checkout source code to working directory
+      - run:
+          command: |
+            sudo python setup.py install
+            sudo pip install pytest-cov
+      - run:
+          command: |  # Run test suite
+            pytest test/ -v --cov=divHretention --cov-report term --cov-report xml --junitxml=test-reports/junit.xml
+
+      - store_test_results:
+          path: test-reports
+
+      - run: bash <(curl -s https://codecov.io/bash)

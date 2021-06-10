@@ -1,0 +1,6 @@
+include divHretention/data/*.csv
+include divHretention/data/mb_high_temp/*.csv
+include divHretention/data/mb_low_temp/*.csv
+include README.md
+include requirements.txt
+include LICENSE.txt
