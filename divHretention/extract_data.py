@@ -10,17 +10,23 @@ class Exposition:
     "x" (arc length in m),
 
     "Te" (electron temperature in eV),
+
     "Ti" (ion temperature in eV),
 
     "D_temp_atm" (atom temperature eV),
-    "D_flux_ion" (ion flux in m-2 s-1), "D_flux_atm" (atom flux in m-2 s-1),
+
+    "D_flux_ion" (ion flux in m-2 s-1),
+
+    "D_flux_atm" (atom flux in m-2 s-1),
 
     "Wtot" (heat flux in W/m2)
 
 
     An input file for **WEST** must have the following columns
 
-    "s_cell_m" (arc length in m), "E_imp_ion_eV" (ion energy in eV),
+    "s_cell_m" (arc length in m),
+
+    "E_imp_ion_eV" (ion energy in eV),
 
     "E_imp_atom_eV" (atom temperature eV),
 
@@ -90,7 +96,6 @@ class Exposition:
         self.angles_ions = np.ones(self.arc_length.shape)*default_angle_ion
         self.angles_atoms = np.ones(self.arc_length.shape)*default_angle_atom
 
-        e = 1.6e-19  # C
         self.ion_flux = self.data["D_flux_ion"]
         self.atom_flux = self.data["D_flux_atm"]
         self.net_heat_flux = self.data["Wtot"]
