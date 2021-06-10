@@ -97,3 +97,20 @@ def test_process_file_WEST(tmpdir):
 
     # run
     out = divHretention.process_file(filename, "WEST")
+
+    # test
+    my_exposure = divHretention.Exposition(filename, "WEST")
+    assert np.array_equal(out.temperature, 1.1e-4*my_exposure.net_heat_flux + 323)
+    assert np.array_equal(out.arc_length, my_exposure.arc_length)
+    expected_concentration = divHretention.compute_c_max(
+        out.temperature,
+        my_exposure.E_ion, my_exposure.E_atom,
+        my_exposure.angles_ions, my_exposure.angles_atoms,
+        my_exposure.ion_flux, my_exposure.atom_flux)
+    assert np.array_equal(out.concentration, expected_concentration)
+    expected_inventory, expected_sigma = divHretention.compute_inventory(
+        out.temperature,
+        out.concentration,
+        divHretention.DEFAULT_TIME)
+    assert np.array_equal(out.inventory, expected_inventory)
+    assert np.array_equal(out.sigma_inv, expected_sigma)
