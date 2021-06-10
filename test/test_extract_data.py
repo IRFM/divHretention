@@ -1,6 +1,7 @@
 import divHretention
 import numpy as np
 from pathlib import Path
+import pytest
 
 
 def test_exposition_ITER(tmpdir):
@@ -75,6 +76,19 @@ def test_exposition_WEST(tmpdir):
     assert np.array_equal(my_exposure.net_heat_flux, Wtot)
     assert np.array_equal(my_exposure.angles_ions, angle_ions)
     assert np.array_equal(my_exposure.angles_atoms, angle_atoms)
+
+
+def test_exposition_unknown_type(tmpdir):
+    """Test Exposition with an unknown filetype and checks that an error is
+    raised
+    """
+    # build
+    types = [1, "foo", "iter", "west"]
+
+    # run
+    for filetype in types:
+        with pytest.raises(ValueError):
+            my_exposure = divHretention.Exposition("foo", filetype)
 
 
 def test_process_file_WEST(tmpdir):
