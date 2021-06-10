@@ -1,6 +1,6 @@
 # divHretention
 
-[![CircleCI](https://circleci.com/github/IRFM/divHretention.svg?style=svg)](https://circleci.com/gh/IRFM/divHretention)
+[![CircleCI](https://circleci.com/gh/IRFM/divHretention.svg?style=svg)](https://circleci.com/gh/IRFM/divHretention)
 [![codecov](https://codecov.io/gh/IRFM/divHretention/branch/master/graph/badge.svg?token=WZVYJJHZ15)](https://codecov.io/gh/IRFM/divHretention)
 
 
