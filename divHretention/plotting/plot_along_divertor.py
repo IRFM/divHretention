@@ -253,6 +253,9 @@ class plot_particle_exposure_along_divertor(plot_along_divertor):
 
 
 def plot_inv_with_uncertainty(x, y, sigma, alpha_fill=0.3, **kwargs):
+    """Plots the inventory along the divertor with the associated uncertainity
+    filled
+    """
     line, = plt.plot(x, y, **kwargs)
     plt.fill_between(
         x,
