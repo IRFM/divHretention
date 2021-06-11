@@ -62,11 +62,23 @@ class Exposition:
         self.extract_data()
         self.remove_nan_values()
 
-        # Surface temperature from Delaporte-Mathurin et al, SREP 2020
-        # https://www.nature.com/articles/s41598-020-74844-w
+        self.compute_surface_temperature()
+        self.compute_surface_concentration()
+
+        if inventory:
+            self.compute_inventory()
+
+    def compute_surface_temperature(self):
+        """Computes the surface temperature based on the thermal study
+        performed in Delaporte-Mathurin et al, SREP 2020
+        https://www.nature.com/articles/s41598-020-74844-w
+        """
+
         self.temperature = 1.1e-4*self.net_heat_flux + 323
 
-        # Compute the surface H concentration
+    def compute_surface_concentration(self):
+        """Computes the surface H concentration
+        """
         self.concentration = compute_c_max(
             self.temperature,
             self.E_ion,
@@ -75,8 +87,6 @@ class Exposition:
             self.angles_atoms,
             self.ion_flux,
             self.atom_flux)
-        if inventory:
-            self.compute_inventory()
 
     def compute_inventory(self, time=DEFAULT_TIME):
         """Computes the H inventory and the standard deviation based on
