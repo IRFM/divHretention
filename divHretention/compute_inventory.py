@@ -28,6 +28,9 @@ def fetch_inventory_and_error(time):
             if c == 0:
                 val = 0
             else:
+                print(c)
+                if c < 0:
+                    assert False
                 val = 10**GP((T, np.log10(c)))[0][0]
             return val
 
@@ -123,6 +126,9 @@ def compute_c_max(
 
     reflection_coeff_ions = np.array(reflection_coeff_ions)
     reflection_coeff_atoms = np.array(reflection_coeff_atoms)
+
+    implantation_range_ions = np.array(implantation_range_ions)
+    implantation_range_atoms = np.array(implantation_range_atoms)
 
     # compute c_max
     c_max_ions = (1 - reflection_coeff_ions) * \

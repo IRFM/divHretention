@@ -22,15 +22,7 @@ sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"][:
 # interpolate reflection coeff
 GP_reflection_coeff = GpRegressor(sim_points, data["Reflection_coeff"][::step], kernel=RationalQuadratic)
 
-# evaluate the estimate
-# Nx, Ny = 60, 5
-# gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
-# gp_y = np.linspace(0, 80, Ny)
 
-# gp_coords = [(i, j) for i in gp_x for j in gp_y]
-# mu_reflection, sig_reflection = GP_reflection_coeff(gp_coords)
-
-# reflection_coeff = interp2d(10**gp_x, gp_y, mu_reflection, kind='cubic')
 def reflection_coeff(energy, angle):
     if energy == 0:
         return 0
@@ -38,34 +30,11 @@ def reflection_coeff(energy, angle):
         return GP_reflection_coeff((np.log10(energy), angle))[0]
 
 # interpolate implantation range
-GP_imp_range = GpRegressor(sim_points, data["Implantation_range"][::step], kernel=RationalQuadratic)
 
-# evaluate the estimate
-Nx, Ny = 3, 2
-gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
-gp_y = np.linspace(0, 80, Ny)
 
-gp_coords = [(i, j) for i in gp_x for j in gp_y]
-mu_implantation_range, sig_implantation_range = GP_imp_range(gp_coords)
-
-# implantation_range = interp2d(10**gp_x, gp_y, mu_implantation_range, kind='linear')
 def implantation_range(energy, angle):
-    if energy == 0:
-        return 0
-    else:
-        return GP_imp_range((np.log10(energy), angle))[0]
+    return 1.88e-10*energy**0.5924
 
 
 if __name__ == '__main__':
-    XX, YY = np.meshgrid(10**gp_x, gp_y)
-    mu_mu = mu_implantation_range.reshape([Nx, Ny]).T
-    sig_sig = sig_implantation_range.reshape([Nx, Ny]).T
-    CS = plt.contourf(XX, YY, mu_mu, levels=1000)
-    CS2 = plt.contour(XX, YY, mu_mu, levels=20, colors="white")
-
-    plt.scatter(data["Incident_energy"], data["theta_inc"], c=data["Implantation_range"], edgecolors="grey")
-    plt.xlabel("Incident energy (eV)")
-    plt.ylabel("Angle of incidence (°)")
-    plt.xscale("log")
-    plt.colorbar(CS, label="Implantation range (m)")
-    plt.show()
+    pass
