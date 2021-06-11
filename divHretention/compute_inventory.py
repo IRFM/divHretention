@@ -28,7 +28,6 @@ def fetch_inventory_and_error(time):
             if c == 0:
                 val = 0
             else:
-                print(c)
                 if c < 0:
                     assert False
                 val = 10**GP((T, np.log10(c)))[0][0]
