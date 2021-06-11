@@ -250,3 +250,12 @@ class plot_particle_exposure_along_divertor(plot_along_divertor):
         super().__init__(
             quantities=quantities,
             **kwargs)
+
+
+def plot_inv_with_uncertainty(x, y, sigma, alpha_fill=0.3, **kwargs):
+    line, = plt.plot(x, y, **kwargs)
+    plt.fill_between(
+        x,
+        10**(2*sigma + np.log10(y)),
+        10**(-2*sigma + np.log10(y)),
+        facecolor=line.get_color(), alpha=alpha_fill)

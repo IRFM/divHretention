@@ -12,7 +12,7 @@ from .plotting.plot_2d_contour import plot_Tc_map_with_subplots, \
     create_2d_inv_array
 from .plotting.plot_along_divertor import \
     plot_T_c_inv_along_divertor, plot_particle_exposure_along_divertor, \
-    plot_along_divertor, create_correspondance_dict
+    plot_along_divertor, create_correspondance_dict, plot_inv_with_uncertainty
 
 
 step_mb = 6
