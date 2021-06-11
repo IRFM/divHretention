@@ -71,6 +71,8 @@ class plot_Tc_map_with_subplots():
         y = np.logspace(np.log10(self.c_bounds[0]), np.log10(self.c_bounds[1]), num=10)
         XX, YY = np.meshgrid(x, y)
         values, levels = create_2d_inv_array(XX, YY, time=self.time)
+        plt.xlim(*self.T_bounds)
+        plt.ylim(*self.c_bounds)
 
         # plot the inventory contour
         locator = ticker.LogLocator(base=10)
@@ -79,9 +81,9 @@ class plot_Tc_map_with_subplots():
             c.set_edgecolor("face")
         # plt.colorbar(CS, label=r"Inventory per monoblock (H)", ticks=locator)
         plt.yscale("log")
-        plt.tick_params(axis='both', which='major')#, labelsize=13)
-        plt.xlabel(r"$T_\mathrm{surface}$ (K)")#, fontsize=12)
-        plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)")#, fontsize=12)
+        plt.tick_params(axis='both', which='major')
+        plt.xlabel(r"$T_\mathrm{surface}$ (K)")
+        plt.ylabel(r"$c_\mathrm{surface}$ (m$^{-3}$)")
 
     def add_case(self, filename, filetype):
         """Adds a new exposure case to the plot.
