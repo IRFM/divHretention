@@ -31,7 +31,7 @@ data = []
 strings = list_of_high_temp_files
 count = 0
 for s in strings:
-    match_number = re.compile('-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?')
+    match_number = re.compile(r'-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?')
     e = re.findall(match_number, s)
     points.append([float(e[i])*10**float(e[i+1]) for i in [0, 2]])
 
@@ -63,7 +63,7 @@ L = 30e-3
 strings = list_of_low_temp_files
 
 for s in strings:
-    match_number = re.compile('-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?')
+    match_number = re.compile(r'-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?')
     e = re.findall(match_number, s)
     a = [float(e[i])*10**float(e[i+1]) for i in [0, 2]]
     points.append(a)
