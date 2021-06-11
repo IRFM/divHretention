@@ -44,8 +44,10 @@ class Exposition:
     Args:
         filename (str): file path
         filetype (str): "ITER" or "WEST"
+        inventory (bool, optional): If True, inventory will be computed on
+            construction. Defaults to True.
     """
-    def __init__(self, filename, filetype):
+    def __init__(self, filename, filetype, inventory=True):
         self.filename = filename
         self.filetype = filetype
         self.arc_length = []
@@ -59,6 +61,36 @@ class Exposition:
         self.data = None
         self.extract_data()
         self.remove_nan_values()
+
+        # Surface temperature from Delaporte-Mathurin et al, SREP 2020
+        # https://www.nature.com/articles/s41598-020-74844-w
+        self.temperature = 1.1e-4*self.net_heat_flux + 323
+
+        # Compute the surface H concentration
+        self.concentration = compute_c_max(
+            self.temperature,
+            self.E_ion,
+            self.E_atom,
+            self.angles_ions,
+            self.angles_atoms,
+            self.ion_flux,
+            self.atom_flux)
+        if inventory:
+            self.compute_inventory()
+
+    def compute_inventory(self, time=DEFAULT_TIME):
+        """Computes the H inventory and the standard deviation based on
+        self.temperature, self.concentration and time. The inventory and
+        standard deviation are stored in the attributes self.inventory and
+        self.stdev_in.
+
+        Args:
+            time (float, optional): Exposure time (s). Defaults to
+                DEFAULT_TIME.
+        """
+        # compute inventory as a function of temperature and concentration
+        self.inventory, self.stdev_inv = compute_inventory(
+            self.temperature, self.concentration, time=time)
 
     def extract_data(self):
         """Extracts exposure data from a CSV file
@@ -111,57 +143,6 @@ class Exposition:
         default_energy = 0.0
         np.nan_to_num(self.E_ion, copy=False, nan=default_energy)
         np.nan_to_num(self.E_atom, copy=False, nan=default_energy)
-
-
-def process_file(filename, filetype, inventory=True, time=DEFAULT_TIME):
-    """Computes an output given a filename
-
-    Args:
-        filename (str): CSV file path. See extract_data.Exposition for
-            information on the formatting.
-        filetype (str): The type of CSV file "ITER" or "WEST".
-        inventory (bool, optional): If True, the inventories and standard
-            deviation will be computed and stored in the output. Defaults to
-            True.
-        time (float, optional): Time in seconds at which the inventory is
-            computed. Defaults to 1e7.
-
-    Returns:
-        Output(): object with attributes "arc_length", "temperature",
-        "concentration", "inventory", "sigma_inv"
-    """
-    my_exposition = Exposition(filename, filetype)
-    # Surface temperature from Delaporte-Mathurin et al, SREP 2020
-    # https://www.nature.com/articles/s41598-020-74844-w
-    T = 1.1e-4*my_exposition.net_heat_flux + 323
-
-    # Compute the surface H concentration
-    c_max = compute_c_max(
-        T,
-        my_exposition.E_ion,
-        my_exposition.E_atom,
-        my_exposition.angles_ions,
-        my_exposition.angles_atoms,
-        my_exposition.ion_flux,
-        my_exposition.atom_flux)
-
-    if inventory:
-        # compute inventory as a function of temperature and concentration
-        inventories, sigmas = compute_inventory(T, c_max, time=time)
-
-    # output dict
-    class Output:
-        pass
-
-    output = Output()
-    output.arc_length = my_exposition.arc_length
-    output.temperature = T
-    output.concentration = c_max
-    if inventory:
-        output.inventory = inventories
-        output.sigma_inv = sigmas
-
-    return output
 
 
 if __name__ == "__main__":
