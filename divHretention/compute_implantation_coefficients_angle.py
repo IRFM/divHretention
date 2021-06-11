@@ -40,7 +40,7 @@ def reflection_coeff(energy, angle):
 
     Returns:
         float: the reflection coefficient between 0 and 1. 1 = all particles
-            are reflected, 0 = all particles are implanted
+        are reflected, 0 = all particles are implanted
     """
     if energy == 0:
         return 0
