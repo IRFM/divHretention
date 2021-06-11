@@ -42,14 +42,14 @@ From an input file
    import matplotlib.pyplot as plt
    import numpy as np
 
-   from divHretention import process_file
+   from divHretention import Exposition
    filenames = [
          "data/exposure_conditions_divertor/WEST/West-LSN-P1.6e+21-IP0.449MW.csv",
          "data/exposure_conditions_divertor/WEST/West-LSN-P2.5e+21-IP1.500MW.csv",
    ]
 
    for i, filename in enumerate(filenames):
-         res = process_file(filename, filetype="WEST")
+         res = Exposition(filename, filetype="WEST")
          plt.plot(res.arc_length, res.inventory, label="Case {}".format(i+1))
 
 
