@@ -20,14 +20,16 @@ Basic usage
    import numpy as np
    from divHretention import compute_inventory
 
-   arc_length = np.linspace(0, 1)  # arc length (m) along the divertor
-   T = 1100*np.exp(-arc_length)  # temperature (K) profile
-   concentration = 1e20*np.exp(-arc_length)  # surface concentration (H m-3)
+
+   x = np.linspace(0, 0.6, num=500)  # arc length (m) along the divertor
+   T = 320 + 1000*np.exp(-50*x)
+   concentration = 5e21*np.exp(-50*x)  # surface concentration (H m-3)
 
    # compute the inventory (H/m) and standard deviation at 10 000s
    inv, sig = compute_inventory(T, concentration, time=1e4)
 
-   plt.plot(arc_length, inv)
+   plt.plot(x, inv)
+   plt.yscale("log")
    plt.xlabel("Distance along divertor (m)")
    plt.ylabel("Inventory per unit thickness (H/m)")
    plt.show()
