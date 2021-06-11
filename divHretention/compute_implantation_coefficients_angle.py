@@ -10,17 +10,23 @@ except ImportError:
     # Try backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
 
-from . import data as data_module  # relative-import the *package* containing the templates
+from . import data as data_module
 
 
 with pkg_resources.path(data_module, "data_TRIM_energy_angle.csv") as p:
     data = np.genfromtxt(p, delimiter=";", names=True)
 
 step = 5
-sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"][::step], data["theta_inc"][::step])]
+sim_points = [
+    [np.log10(E), theta]
+    for E, theta in
+    zip(
+        data["Incident_energy"][::step],
+        data["theta_inc"][::step])]
 
 # interpolate reflection coeff
-GP_reflection_coeff = GpRegressor(sim_points, data["Reflection_coeff"][::step], kernel=RationalQuadratic)
+GP_reflection_coeff = GpRegressor(
+    sim_points, data["Reflection_coeff"][::step], kernel=RationalQuadratic)
 
 
 def reflection_coeff(energy, angle):
