@@ -5,6 +5,8 @@ from .process_T_c_data import points, data
 from inference.gp_tools import GpRegressor
 from inference.gp_tools import RationalQuadratic
 
+import divHretention
+
 
 def inv(points, time=1e7):
     ''' returns a 1D array'''
@@ -40,8 +42,10 @@ def estimate_inventory_with_gp_regression(time=1e7):
     sim_points = np.array(sim_points)
 
     # Train the GP on the data
-    step = 3
-    GP = GpRegressor(sim_points[:: step], z[:: step], kernel=RationalQuadratic)
+    GP = GpRegressor(
+        sim_points[:: divHretention.step_mb],
+        z[:: divHretention.step_mb],
+        kernel=RationalQuadratic)
 
     # evaluate the estimate
     Nx, Ny = 50, 10
