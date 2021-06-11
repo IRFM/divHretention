@@ -30,6 +30,18 @@ GP_reflection_coeff = GpRegressor(
 
 
 def reflection_coeff(energy, angle):
+    """Computes the reflection coefficient based on the particles incident
+    energy and angle.
+
+    Args:
+        energy (float): incident energy in eV
+        angle (float): angle of incidence in degree (0deg corresponds to a
+            normal incidence)
+
+    Returns:
+        float: the reflection coefficient between 0 and 1. 1 = all particles
+            are reflected, 0 = all particles are implanted
+    """
     if energy == 0:
         return 0
     else:
@@ -39,6 +51,19 @@ def reflection_coeff(energy, angle):
 
 
 def implantation_range(energy, angle):
+    """Computes the reflection coefficient based on the particles incident
+    energy and angle. Based on the formula:
+    implantation range = 1.88e-10*energy^0.5924
+
+    Args:
+        energy (float): incident energy in eV
+        angle (float): angle of incidence in degree (0deg corresponds to a
+            normal incidence). Note: there is no angular dependence in this
+            model
+
+    Returns:
+        float: the implantation range in m
+    """
     return 1.88e-10*energy**0.5924
 
 
