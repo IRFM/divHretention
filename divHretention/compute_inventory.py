@@ -140,5 +140,14 @@ def compute_c_max(
         return c_max
 
 
+def compute_surface_temperature(heat_flux):
+    """Computes the surface temperature based on the thermal study
+    performed in Delaporte-Mathurin et al, SREP 2020
+    https://www.nature.com/articles/s41598-020-74844-w
+    """
+
+    return 1.1e-4*heat_flux + 323
+
+
 if __name__ == "__main__":
     pass

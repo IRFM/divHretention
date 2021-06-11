@@ -1,5 +1,6 @@
 import numpy as np
-from divHretention import DEFAULT_TIME, compute_c_max, compute_inventory
+from divHretention import DEFAULT_TIME, compute_c_max, compute_inventory, \
+    compute_surface_temperature
 
 
 class Exposition:
@@ -74,7 +75,7 @@ class Exposition:
         https://www.nature.com/articles/s41598-020-74844-w
         """
 
-        self.temperature = 1.1e-4*self.net_heat_flux + 323
+        self.temperature = compute_surface_temperature(self.net_heat_flux)
 
     def compute_surface_concentration(self):
         """Computes the surface H concentration
