@@ -124,6 +124,9 @@ def compute_c_max(
     reflection_coeff_ions = np.array(reflection_coeff_ions)
     reflection_coeff_atoms = np.array(reflection_coeff_atoms)
 
+    implantation_range_ions = np.array(implantation_range_ions)
+    implantation_range_atoms = np.array(implantation_range_atoms)
+
     # compute c_max
     c_max_ions = (1 - reflection_coeff_ions) * \
         ion_flux*implantation_range_ions/D
@@ -135,6 +138,15 @@ def compute_c_max(
         return c_max, c_max_ions, c_max_atoms
     else:
         return c_max
+
+
+def compute_surface_temperature(heat_flux):
+    """Computes the surface temperature based on the thermal study
+    performed in Delaporte-Mathurin et al, SREP 2020
+    https://www.nature.com/articles/s41598-020-74844-w
+    """
+
+    return 1.1e-4*heat_flux + 323
 
 
 if __name__ == "__main__":

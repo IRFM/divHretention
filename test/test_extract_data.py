@@ -110,7 +110,8 @@ def test_process_file_WEST(tmpdir):
     np.savetxt(filename, data, delimiter=";", header=header)
 
     # run
-    out = divHretention.process_file(filename, "WEST")
+    out = divHretention.Exposition(filename, "WEST")
+    out.compute_inventory()
 
     # test
     my_exposure = divHretention.Exposition(filename, "WEST")
@@ -127,7 +128,7 @@ def test_process_file_WEST(tmpdir):
         out.concentration,
         divHretention.DEFAULT_TIME)
     assert np.array_equal(out.inventory, expected_inventory)
-    assert np.array_equal(out.sigma_inv, expected_sigma)
+    assert np.array_equal(out.stdev_inv, expected_sigma)
 
 
 def test_process_file_ITER(tmpdir):
@@ -147,7 +148,8 @@ def test_process_file_ITER(tmpdir):
     np.savetxt(filename, data, delimiter=",", header=header)
 
     # run
-    out = divHretention.process_file(filename, "ITER")
+    out = divHretention.Exposition(filename, "ITER")
+    out.compute_inventory()
 
     # test
     my_exposure = divHretention.Exposition(filename, "ITER")
@@ -164,4 +166,4 @@ def test_process_file_ITER(tmpdir):
         out.concentration,
         divHretention.DEFAULT_TIME)
     assert np.array_equal(out.inventory, expected_inventory)
-    assert np.array_equal(out.sigma_inv, expected_sigma)
+    assert np.array_equal(out.stdev_inv, expected_sigma)

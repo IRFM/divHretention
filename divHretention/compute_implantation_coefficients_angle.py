@@ -10,62 +10,62 @@ except ImportError:
     # Try backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
 
-from . import data as data_module  # relative-import the *package* containing the templates
+from . import data as data_module
 
 
 with pkg_resources.path(data_module, "data_TRIM_energy_angle.csv") as p:
     data = np.genfromtxt(p, delimiter=";", names=True)
 
 step = 5
-sim_points = [[np.log10(E), theta] for E, theta in zip(data["Incident_energy"][::step], data["theta_inc"][::step])]
+sim_points = [
+    [np.log10(E), theta]
+    for E, theta in
+    zip(
+        data["Incident_energy"][::step],
+        data["theta_inc"][::step])]
 
 # interpolate reflection coeff
-GP_reflection_coeff = GpRegressor(sim_points, data["Reflection_coeff"][::step], kernel=RationalQuadratic)
+GP_reflection_coeff = GpRegressor(
+    sim_points, data["Reflection_coeff"][::step], kernel=RationalQuadratic)
 
-# evaluate the estimate
-# Nx, Ny = 60, 5
-# gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
-# gp_y = np.linspace(0, 80, Ny)
 
-# gp_coords = [(i, j) for i in gp_x for j in gp_y]
-# mu_reflection, sig_reflection = GP_reflection_coeff(gp_coords)
-
-# reflection_coeff = interp2d(10**gp_x, gp_y, mu_reflection, kind='cubic')
 def reflection_coeff(energy, angle):
+    """Computes the reflection coefficient based on the particles incident
+    energy and angle.
+
+    Args:
+        energy (float): incident energy in eV
+        angle (float): angle of incidence in degree (0deg corresponds to a
+            normal incidence)
+
+    Returns:
+        float: the reflection coefficient between 0 and 1. 1 = all particles
+        are reflected, 0 = all particles are implanted
+    """
     if energy == 0:
         return 0
     else:
         return GP_reflection_coeff((np.log10(energy), angle))[0]
 
 # interpolate implantation range
-GP_imp_range = GpRegressor(sim_points, data["Implantation_range"][::step], kernel=RationalQuadratic)
 
-# evaluate the estimate
-Nx, Ny = 3, 2
-gp_x = np.log10(np.logspace(1, np.log10(1400), Nx))
-gp_y = np.linspace(0, 80, Ny)
 
-gp_coords = [(i, j) for i in gp_x for j in gp_y]
-mu_implantation_range, sig_implantation_range = GP_imp_range(gp_coords)
-
-# implantation_range = interp2d(10**gp_x, gp_y, mu_implantation_range, kind='linear')
 def implantation_range(energy, angle):
-    if energy == 0:
-        return 0
-    else:
-        return GP_imp_range((np.log10(energy), angle))[0]
+    """Computes the reflection coefficient based on the particles incident
+    energy and angle. Based on the formula:
+    implantation range = 1.88e-10*energy^0.5924
+
+    Args:
+        energy (float): incident energy in eV
+        angle (float): angle of incidence in degree (0deg corresponds to a
+            normal incidence). Note: there is no angular dependence in this
+            model
+
+    Returns:
+        float: the implantation range in m
+    """
+    return 1.88e-10*energy**0.5924
 
 
 if __name__ == '__main__':
-    XX, YY = np.meshgrid(10**gp_x, gp_y)
-    mu_mu = mu_implantation_range.reshape([Nx, Ny]).T
-    sig_sig = sig_implantation_range.reshape([Nx, Ny]).T
-    CS = plt.contourf(XX, YY, mu_mu, levels=1000)
-    CS2 = plt.contour(XX, YY, mu_mu, levels=20, colors="white")
-
-    plt.scatter(data["Incident_energy"], data["theta_inc"], c=data["Implantation_range"], edgecolors="grey")
-    plt.xlabel("Incident energy (eV)")
-    plt.ylabel("Angle of incidence (°)")
-    plt.xscale("log")
-    plt.colorbar(CS, label="Implantation range (m)")
-    plt.show()
+    pass

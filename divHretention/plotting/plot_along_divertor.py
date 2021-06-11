@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 
-from divHretention import process_file, extract_data
+from divHretention import Exposition
 
 correspondance_dict = {
     "arc_length": {
@@ -51,7 +51,7 @@ correspondance_dict = {
         "yscale": "log",
         "label": "Inventory per \n unit thickness (H/m)"
     },
-    "sigma_inv": {
+    "stdev_inv": {
     },
 }
 
@@ -67,7 +67,7 @@ class plot_along_divertor():
             ("WEST" or "ITER"). Defaults to [].
         quantities (list, optional): The quantities to be plotted
             (see :py:meth:`correspondance_dict` in
-            :py:mod:`plot_along_divertor`). Defaults to ["sigma_inv"].
+            :py:mod:`plot_along_divertor`). Defaults to ["stdev_inv"].
         figsize (tuple, optional): The size of the figure. Defaults to (8, 8).
         plot_sigma (bool, optional): If true, the 95% confidence interval will
             be plotted. Defaults to True.
@@ -81,7 +81,7 @@ class plot_along_divertor():
         ValueError: if missing the filetypes argument
     """
     def __init__(
-            self, filenames=[], filetypes=[], quantities=["sigma_inv"],
+            self, filenames=[], filetypes=[], quantities=["stdev_inv"],
             figsize=(8, 8), plot_sigma=True, overlap_ions_atoms=True,
             colors=None, **kwargs):
 
@@ -183,7 +183,7 @@ class plot_along_divertor():
 
             # plot confidence interval
             if quantity == "inventory" and self.plot_sigma:
-                sigma = correspondance_dict["sigma_inv"]["var"]
+                sigma = correspondance_dict["stdev_inv"]["var"]
                 inventory = correspondance_dict[quantity]["var"]
                 plt.fill_between(
                     arc_length,
@@ -210,9 +210,8 @@ def create_correspondance_dict(filename, filetype):
     Returns:
         dict: correspondance dictionary with a "var" key for each quantity
     """
-    my_exposition = extract_data.Exposition(filename, filetype)
-    res = process_file(filename, filetype)
-    correspondance_dict["arc_length"]["var"] = res.arc_length
+    my_exposition = Exposition(filename, filetype)
+    correspondance_dict["arc_length"]["var"] = my_exposition.arc_length
     correspondance_dict["ion_energy"]["var"] = my_exposition.E_ion
     correspondance_dict["atom_energy"]["var"] = my_exposition.E_atom
     correspondance_dict["ion_flux"]["var"] = my_exposition.ion_flux
@@ -220,10 +219,10 @@ def create_correspondance_dict(filename, filetype):
     correspondance_dict["heat_flux"]["var"] = my_exposition.net_heat_flux
     correspondance_dict["ion_angle"]["var"] = my_exposition.angles_ions
     correspondance_dict["atom_angle"]["var"] = my_exposition.angles_atoms
-    correspondance_dict["T_surf"]["var"] = res.temperature
-    correspondance_dict["c_surf"]["var"] = res.concentration
-    correspondance_dict["inventory"]["var"] = res.inventory
-    correspondance_dict["sigma_inv"]["var"] = res.sigma_inv
+    correspondance_dict["T_surf"]["var"] = my_exposition.temperature
+    correspondance_dict["c_surf"]["var"] = my_exposition.concentration
+    correspondance_dict["inventory"]["var"] = my_exposition.inventory
+    correspondance_dict["stdev_inv"]["var"] = my_exposition.stdev_inv
 
     return correspondance_dict
 

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 
-from divHretention import process_file, DEFAULT_TIME, database_inv_sig, fetch_inventory_and_error
+from divHretention import DEFAULT_TIME, database_inv_sig, fetch_inventory_and_error, Exposition
 
 
 class plot_Tc_map_with_subplots():
@@ -96,7 +96,7 @@ class plot_Tc_map_with_subplots():
         self.count += 1
         self.filenames.append(filename)
         xlabel = "Distance along divertor (m)"
-        res = process_file(filename, filetype)
+        res = Exposition(filename, filetype)
         plt.sca(self.axs_bottom[0])
         plt.plot(res.temperature, res.concentration, alpha=0.7)
         plt.sca(self.axs_bottom[1])
@@ -111,8 +111,8 @@ class plot_Tc_map_with_subplots():
 
         plt.fill_between(
             res.arc_length,
-            10**(2*res.sigma_inv + np.log10(res.inventory)),
-            10**(-2*res.sigma_inv + np.log10(res.inventory)),
+            10**(2*res.stdev_inv + np.log10(res.inventory)),
+            10**(-2*res.stdev_inv + np.log10(res.inventory)),
             facecolor=line.get_color(), alpha=0.3)
         plt.ylabel("Inventory per unit thickness (H/m)")
         plt.yscale("log")
@@ -126,7 +126,7 @@ class plot_Tc_map_with_subplots():
 
 def create_2d_inv_array(XX, YY, time=DEFAULT_TIME):
     values = np.zeros(XX.shape)
-    min_value, max_value = np.float("inf"), np.float("-inf")
+    min_value, max_value = float("inf"), float("-inf")
     for i in range(len(XX)):
         for j in range(len(XX[i])):
             inventory = fetch_inventory_and_error(time)[0]
