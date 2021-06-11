@@ -126,7 +126,7 @@ class plot_Tc_map_with_subplots():
 
 def create_2d_inv_array(XX, YY, time=DEFAULT_TIME):
     values = np.zeros(XX.shape)
-    min_value, max_value = np.float("inf"), np.float("-inf")
+    min_value, max_value = float("inf"), float("-inf")
     for i in range(len(XX)):
         for j in range(len(XX[i])):
             inventory = fetch_inventory_and_error(time)[0]
