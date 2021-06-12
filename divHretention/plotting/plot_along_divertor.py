@@ -255,6 +255,12 @@ class plot_particle_exposure_along_divertor(plot_along_divertor):
 def plot_inv_with_uncertainty(x, y, sigma, alpha_fill=0.3, **kwargs):
     """Plots the inventory along the divertor with the associated uncertainity
     filled
+
+    Args:
+        x ([type]): Arc length (m) along the divertor
+        y ([type]): Inventory per unit thickness (H/m) 
+        sigma ([type]): Relative error
+        alpha_fill (float, optional): Shows the boundaries of uncertainty. Defaults to 0.3.
     """
     line, = plt.plot(x, y, **kwargs)
     plt.fill_between(
