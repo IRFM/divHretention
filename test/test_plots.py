@@ -6,7 +6,7 @@ import pytest
 import numpy as np
 
 from divHretention import plot_Tc_map_with_subplots, \
-    plot_T_c_inv_along_divertor
+    plot_T_c_inv_along_divertor, plot_inv_with_uncertainty, compute_inventory
 
 
 class TestExtrudeStraightShape(unittest.TestCase):
@@ -33,3 +33,12 @@ class TestExtrudeStraightShape(unittest.TestCase):
 
     def test_plot_T_c_inv_along_div(self):
         plot_T_c_inv_along_divertor(filenames=[self.filename, self.filename], filetypes="WEST")
+
+def test_plot_inv_with_uncertainty(self):
+    x = np.linspace(0, 0.6, num=500)  # arc length (m) along the divertor
+    T = 350 + 1000*np.exp(-50*x)
+    concentration = 7e21*(1 + np.exp(-50*x))  # surface concentration (H m-3)  
+
+    inv, sig = compute_inventory(T, concentration, time=1e5) 
+
+    plot_inv_with_uncertainty(x, inv, sig)
