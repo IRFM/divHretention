@@ -6,7 +6,7 @@ from inference.gp_tools import GpRegressor
 from inference.gp_tools import RationalQuadratic
 
 import divHretention
-
+# test comment
 
 def inv(points, time=1e7):
     ''' returns a 1D array'''
