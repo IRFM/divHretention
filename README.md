@@ -61,12 +61,12 @@ plt.show()
 
 ```python
 import matplotlib.pyplot as plt
-import numpy as np
 
 from divHretention import Exposition
+
 filenames = [
-    "data/exposure_conditions_divertor/WEST/West-LSN-P1.6e+21-IP0.449MW.csv",
-    "data/exposure_conditions_divertor/WEST/West-LSN-P2.5e+21-IP1.500MW.csv",
+    "examples/WEST/West-LSN-P1.6e+21-IP0.449MW.csv",
+    "examples/WEST/West-LSN-P2.5e+21-IP1.500MW.csv",
 ]
 
 for i, filename in enumerate(filenames):
