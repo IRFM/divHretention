@@ -19,6 +19,4 @@ Plotting
    :members:
    :show-inheritance:
 
-.. autoclass:: divHretention.plot_inv_with_uncertainty
-   :members:
-   :show-inheritance:
+.. autofunction:: divHretention.plot_inv_with_uncertainty
