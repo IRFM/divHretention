@@ -261,7 +261,7 @@ def plot_inv_with_uncertainty(x, y, stdev, zscore=2, alpha_fill=0.3, **kwargs):
         y (numpy.array): Inventory per unit thickness (H/m) 
         stdev (numpy.array): standard deviation
         zscore (float): userdefined zscore corresponding to a confidence interval. Defaults to 2.
-        alpha_fill (float, optional): Shows the boundaries of uncertainty. Defaults to 0.3.
+        alpha_fill (float, optional): Opacity of the filled region between 0 and 1. Defaults to 0.3.
     """
     # check that zscore is a float
     if type(zscore) not in [float, int]:
