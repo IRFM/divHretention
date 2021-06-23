@@ -257,9 +257,9 @@ def plot_inv_with_uncertainty(x, y, sigma, alpha_fill=0.3, **kwargs):
     filled
 
     Args:
-        x ([type]): Arc length (m) along the divertor
-        y ([type]): Inventory per unit thickness (H/m) 
-        sigma ([type]): Relative error
+        x (numpy.array): Arc length (m) along the divertor
+        y (numpy.array): Inventory per unit thickness (H/m) 
+        sigma (numpy.array): standard deviation
         alpha_fill (float, optional): Shows the boundaries of uncertainty. Defaults to 0.3.
     """
     line, = plt.plot(x, y, **kwargs)
