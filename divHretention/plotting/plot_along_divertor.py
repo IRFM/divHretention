@@ -250,3 +250,25 @@ class plot_particle_exposure_along_divertor(plot_along_divertor):
         super().__init__(
             quantities=quantities,
             **kwargs)
+
+
+def plot_inv_with_uncertainty(x, y, stdev, zscore=2, alpha_fill=0.3, **kwargs):
+    """Plots the inventory along the divertor with the associated uncertainity
+    filled
+
+    Args:
+        x (numpy.array): Arc length (m) along the divertor
+        y (numpy.array): Inventory per unit thickness (H/m) 
+        stdev (numpy.array): standard deviation
+        zscore (float): userdefined zscore corresponding to a confidence interval. Defaults to 2.
+        alpha_fill (float, optional): Opacity of the filled region between 0 and 1. Defaults to 0.3.
+    """
+    # check that zscore is a float
+    if type(zscore) not in [float, int]:
+        raise TypeError("zscore should be a float")
+    line, = plt.plot(x, y, **kwargs)
+    plt.fill_between(
+        x,
+        10**(zscore*stdev + np.log10(y)),
+        10**(-zscore*stdev + np.log10(y)),
+        facecolor=line.get_color(), alpha=alpha_fill)

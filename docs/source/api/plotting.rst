@@ -18,3 +18,5 @@ Plotting
 .. autoclass:: divHretention.plot_particle_exposure_along_divertor
    :members:
    :show-inheritance:
+
+.. autofunction:: divHretention.plot_inv_with_uncertainty
