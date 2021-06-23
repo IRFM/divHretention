@@ -34,7 +34,7 @@ class TestExtrudeStraightShape(unittest.TestCase):
     def test_plot_T_c_inv_along_div(self):
         plot_T_c_inv_along_divertor(filenames=[self.filename, self.filename], filetypes="WEST")
 
-def test_plot_inv_with_uncertainty(self):
+def test_plot_inv_with_uncertainty():
     x = np.linspace(0, 0.6, num=500)  # arc length (m) along the divertor
     T = 350 + 1000*np.exp(-50*x)
     concentration = 7e21*(1 + np.exp(-50*x))  # surface concentration (H m-3)  
