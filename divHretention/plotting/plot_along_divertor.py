@@ -252,7 +252,7 @@ class plot_particle_exposure_along_divertor(plot_along_divertor):
             **kwargs)
 
 
-def plot_inv_with_uncertainty(x, y, zscore, stdev, alpha_fill=0.3, **kwargs):
+def plot_inv_with_uncertainty(x, y, stdev, zscore, alpha_fill=0.3, **kwargs):
     """Plots the inventory along the divertor with the associated uncertainity
     filled
 
