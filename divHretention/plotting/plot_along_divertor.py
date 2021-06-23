@@ -264,7 +264,7 @@ def plot_inv_with_uncertainty(x, y, stdev, zscore, alpha_fill=0.3, **kwargs):
         alpha_fill (float, optional): Shows the boundaries of uncertainty. Defaults to 0.3.
     """
     # check that zscore is a float
-    if type(zscore) is not float:
+    if type(zscore) not in [float, int]:
         raise TypeError("zscore should be a float")
     line, = plt.plot(x, y, **kwargs)
     plt.fill_between(
